@@ -1,0 +1,5 @@
+gillsanslight-regular (embedded Subset)
+gillsanslight-bold (embedded Subset)
+
+truetype
+ansi
