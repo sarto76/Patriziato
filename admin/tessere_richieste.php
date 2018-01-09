@@ -149,7 +149,7 @@ include '../database.php';
     if(mysqli_num_rows($result) == 0){
         ?>
         <div class="alert alert-warning" role="alert">
-            <strong>Attenzione!</strong> Non sono presenti patrizi nel database.
+            <strong>Attenzione!</strong> Non sono presenti richieste nel database.
         </div>
         <?php
     }else{

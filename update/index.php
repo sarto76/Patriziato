@@ -255,7 +255,7 @@ if (isset($_POST['login'])) {
         <input type="password" class="form-control" name="password" id="password" placeholder="Password" style="display: none;" autocomplete="off">
         <p></p>
         <input type="hidden" name="passVisible" id="passVisible" value="0">
-        <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" id="login" style="display: none;" >Aggiorna dati personali</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" id="login" style="display: none;" >Accedi</button>
         <div id="errore"></div>
         <div class="alert alert-danger" id="errore" style="display: none;"></div>
 

@@ -100,6 +100,42 @@ include '../database.php';
             $num=0;
             $richiedenti=count($chiavi);
             $mancanoDati=0;
+            $costo=0;
+
+            //controllo per sicurezza se sono 0
+            if ($richiedenti == 0) {
+                $costo = 0;
+            } //se c'è un solo richiedente il prezzo sarà 100
+            else if ($richiedenti == 1) {
+                $costo = 100;
+                //in ogni caso se sono 2 pagano 200 (che ci siano o meno maggiorenni)
+            } else if ($richiedenti == 2) {
+                $costo = 200;
+
+            }
+            //se sono più di 2 conto tutti i maggiorenni e faccio 100 fr a testa
+            else {
+                foreach ($chiavi as $val) {
+
+                    $dati = "select diritto_di_voto from patrizio where id =$val";
+                    if (!$result = $connection->query($dati)) {
+                        //printf("Errormessage: %s\n", $connection->error);
+                        echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                    }
+                    $tutto = $result->fetch_array(MYSQLI_NUM);
+
+
+                    //se è maggiorenne
+                    if ($tutto[0] == 1) {
+                            $costo = $costo + 100;
+                            //echo $costo;
+                    }
+
+
+                }
+            }
+
+
             foreach ($chiavi as $val) {
 
                 //controllo che non ci siano doppioni
@@ -111,13 +147,13 @@ include '../database.php';
                 $nm = $result->fetch_array(MYSQLI_NUM);
                 $row_cnt = $result->num_rows;
                 $doppione = 0;
-                $costo=100;
+
 
 
 
                 //controllo se ha immesso i dati per la fattura
                 $id = $_SESSION['id'];
-                $dati = "select via,nap,localita,nome,cognome from patrizio where id =$id";
+                $dati = "select via,nap,localita,nome,cognome,diritto_di_voto from patrizio where id =$id";
                 if (!$result = $connection->query($dati)) {
                     //printf("Errormessage: %s\n", $connection->error);
                     echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
@@ -125,8 +161,6 @@ include '../database.php';
                 $tutto = $result->fetch_array(MYSQLI_NUM);
 
             //print_r($tutto);
-
-
                 //se c'è un doppione
                 if ($row_cnt > 0) {
 
@@ -136,7 +170,7 @@ include '../database.php';
                     $doppione = 1;
 
                 }
-
+                //se non ha inserito NAP e località
                 else if ($tutto[1] == "" || $tutto[2] == "") {
 
                     if(!$mancanoDati) {
@@ -145,18 +179,11 @@ include '../database.php';
                         $mancanoDati = 1;
                     }
                 }
-
-
-
                 else {
 
                     //se si tratta del primo componente immetto l'importo della fattura
                     if ($num == 0) {
-                        if ($richiedenti > 1) {
-                            $costo = 200;
-                        } else {
-                            $costo = 100;
-                        }
+
 
                         $sql = "INSERT into tessera (fk_patrizio,fk_stagione,attiva,data_richiesta,costo) values ($val,$stag_id,0,now(),$costo)";
                         //echo($sql);

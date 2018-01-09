@@ -63,8 +63,14 @@ while ($row = $result->fetch_assoc()) {
 
 
 $tipologia="Persona singola";
-if($costo==200){
+if($costo==100){
+    $tipologia="Persona singola";
+}
+else if($costo==200){
     $tipologia="Nucleo famigliare con figli minorenni";
+}
+else{
+    $tipologia="Nucleo famigliare con anche figli maggiorenni";
 }
 
 $nome=$data[0]['nome'];
