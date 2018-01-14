@@ -297,7 +297,7 @@ include '../database.php';
         $localita = mysqli_real_escape_string($connection, $_POST['localita']);
         $padre = mysqli_real_escape_string($connection, $_POST['padre']);
         $madre = mysqli_real_escape_string($connection, $_POST['madre']);
-        $no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
+        //$no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
 
         $date = new DateTime($data_nascita);
         $now = new DateTime();
@@ -319,14 +319,14 @@ include '../database.php';
         }
 
         //query di inserimento con confermato a 0
-        $sql = "insert into patrizio(no_registro,cognome,nome,data_nascita,vivente,data_inserimento,diritto_di_voto,
+        $sql = "insert into patrizio(cognome,nome,data_nascita,vivente,data_inserimento,diritto_di_voto,
         telefono,email,via,nap,localita,padre,madre,foto,confermato)  
-        values ('$no_registro','$cognome','$nome','$data_nascita',1,
+        values ('$cognome','$nome','$data_nascita',1,
         NOW(),'$diritto_di_voto',
         '$telefono','$email','$via',
         $nap,'$localita','$padre','$madre','$foto',0)";
 
-        //echo($sql);
+        echo($sql);
 
         if (!$connection->query($sql)) {
             //printf("Errormessage: %s\n", $connection->error);
