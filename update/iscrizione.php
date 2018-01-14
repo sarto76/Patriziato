@@ -117,7 +117,7 @@ include '../database.php';
             else {
                 foreach ($chiavi as $val) {
 
-                    $dati = "select diritto_di_voto from patrizio where id =$val";
+                    $dati = "select diritto_di_voto from patrizio where id =$val and confermato=1";
                     if (!$result = $connection->query($dati)) {
                         //printf("Errormessage: %s\n", $connection->error);
                         echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
@@ -139,7 +139,7 @@ include '../database.php';
             foreach ($chiavi as $val) {
 
                 //controllo che non ci siano doppioni
-                $doppioni = "select nome,cognome from patrizio where id in (select fk_patrizio from tessera where fk_stagione='$stag_id' and fk_patrizio=$val)";
+                $doppioni = "select nome,cognome from patrizio where confermato=1 and id in (select fk_patrizio from tessera where fk_stagione='$stag_id' and fk_patrizio=$val)";
                 if (!$result = $connection->query($doppioni)) {
                     //printf("Errormessage: %s\n", $connection->error);
                     echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
@@ -153,7 +153,7 @@ include '../database.php';
 
                 //controllo se ha immesso i dati per la fattura
                 $id = $_SESSION['id'];
-                $dati = "select via,nap,localita,nome,cognome,diritto_di_voto from patrizio where id =$id";
+                $dati = "select via,nap,localita,nome,cognome,diritto_di_voto from patrizio where id =$id and confermato=1";
                 if (!$result = $connection->query($dati)) {
                     //printf("Errormessage: %s\n", $connection->error);
                     echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
@@ -181,8 +181,8 @@ include '../database.php';
                 }
                 else {
 
-                    //se si tratta del primo componente immetto l'importo della fattura
-                    if ($num == 0) {
+                    //se si tratta del componente che ha fatto login immetto l'importo della fattura
+                    if ($val == $_SESSION['id']) {
 
 
                         $sql = "INSERT into tessera (fk_patrizio,fk_stagione,attiva,data_richiesta,costo) values ($val,$stag_id,0,now(),$costo)";
@@ -253,14 +253,15 @@ include '../database.php';
     echo('<h2>Iscrizione per tessera impianti di risalita</h2><br>');
     //tiro fuori i patrizi che hanno lo stesso numero di registro
     $query="    SELECT * FROM patrizio p 
-                WHERE no_registro 
-                in (select no_registro from patrizio where id=$id) 
+                WHERE confermato=1
+                AND no_registro 
+                in (select no_registro from patrizio where confermato=1 AND id=$id) 
                 and id not in(
                 SELECT id FROM patrizio p left join tessera t
                 on p.id=t.fk_patrizio
                 left join stagione s 
                 on s.idstagione=t.fk_stagione
-                WHERE s.anni='$anni')
+                WHERE s.anni='$anni' and confermato=1)
                 order by data_nascita ";
     if ($result = $connection->query($query)) {
 
@@ -363,7 +364,15 @@ include '../database.php';
 
                 echo("<div class='form-group col-md-2'>");
                 echo("<label class='form-check-label'>");
-                echo("<input class='form-check-input' type='checkbox' name='check[]' value=$id checked> Seleziona");
+
+                $dis="";
+                $sel="Seleziona";
+                if($_SESSION['id']==$id){
+                    $dis="onclick='return false;'";
+                    $sel="Selezionato";
+                }
+
+                echo("<input class='form-check-input' type='checkbox' name='check[]' value=$id checked $dis> $sel");
                 echo("</label>");
                 echo("</div>");
 
@@ -374,7 +383,7 @@ include '../database.php';
         }
 
         $id = $_SESSION['id'];
-        $result = $connection->query("SELECT nome,cognome,via,nap,localita FROM patrizio WHERE id=$id");
+        $result = $connection->query("SELECT nome,cognome,via,nap,localita FROM patrizio WHERE id=$id and confermato=1");
         $dati = $result->fetch_array(MYSQLI_ASSOC);
         $nome=$dati['nome'];
         $cognome=$dati['cognome'];

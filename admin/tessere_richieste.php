@@ -143,6 +143,7 @@ include '../database.php';
                                   where p.id=t.fk_patrizio
                                   and t.fk_stagione=s.idstagione
                                   and t.attiva=0
+                                  and p.confermato=1
                                   order by no_registro,data_richiesta
                                 ");
 

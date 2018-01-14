@@ -144,6 +144,7 @@ include '../database.php';
                                 FROM patrizio
                                 where vivente=1
                                 and data_perdita_patrizio is null
+                                and confermato=1
                                 ");
        
     if(mysqli_num_rows($result) == 0){

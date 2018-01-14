@@ -369,7 +369,7 @@ include '../database.php';
 
     //titolo
     echo('<h2>Modifica dati personali</h2><br>');
-    if ($result = $connection->query("SELECT *FROM patrizio WHERE id=$id"))
+    if ($result = $connection->query("SELECT *FROM patrizio WHERE id=$id and confermato=1"))
     {
         //form
         echo('<form method="POST" enctype="multipart/form-data" action="update.php" class="form-vertical">');

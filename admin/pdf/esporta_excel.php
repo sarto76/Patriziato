@@ -12,7 +12,7 @@ function LoadData()
                                 IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                 as `diritto_di_voto`, `vivente`, data_inserimento,data_morte,diritto_di_voto,data_perdita_patrizio,telefono,email,
                                 via, nap,localita,foto
-                                FROM patrizio
+                                FROM patrizio WHERE confermato=1
                                 order by cognome,data_nascita desc");
 
     $data = array();

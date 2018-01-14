@@ -11,7 +11,7 @@ class PDF extends FPDF
 
         $result = $connection->query("SELECT `cognome`, `nome`, DATE_FORMAT(`data_nascita`,'%d-%m-%Y') as `data_nascita`, padre,madre
                                 FROM patrizio
-                                where vivente=1
+                                where vivente=1 and confermato=1
                                 and data_perdita_patrizio is null
                                 order by cognome,data_nascita desc");
 
