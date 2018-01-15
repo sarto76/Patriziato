@@ -63,37 +63,12 @@ include '../database.php';
 
     <div class="container">
 
-      <!-- Static navbar -->
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="catel.php">Gestione CatE</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+        <?php
+        $page = 'non_confermati';
+        $titolo = 'Richieste';
+        include('menu.php');
 
-                <li class="active"><a href="catel.php">Catalogo elettorale</a></li>
-                <li><a href="tessere_richieste.php">Tessere in sospeso</a></li>
-              <li><a href="news.php">News</a></li>
-              <li><a href="info.php">Info</a></li>
-              <li><a href="docs.php">Docs</a></li>
-              <li><a href="link.php">Link</a></li>
-              <li><a href="prop.php">Prop</a></li>
-              <li><a href="stat.php">Stat</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span><?php echo " ".$_SESSION["username"]?></a></li>
-              <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-      </nav>
+        ?>
 
     <!-- datatable -->   
     <script type="text/javascript">
@@ -135,12 +110,12 @@ include '../database.php';
     
     <?php
     //titolo pagina
-    echo('<h2>Elenco patrizi</h2><br>');
+    echo('<h2>Elenco richieste iscrizione a registro</h2><br>');
     $connection=Database::getConnection();
 
      $result=$connection->query("SELECT `no_registro`,id, `cognome`, `nome`, `data_nascita`, padre,madre,
                                diritto_di_voto, `vivente`, data_inserimento,data_morte,diritto_di_voto,data_perdita_patrizio,telefono,email,
-                                via, nap,localita,foto
+                                via, nap,localita,foto,confermato
                                 FROM patrizio
                                 where vivente=1
                                 and data_perdita_patrizio is null
@@ -150,7 +125,7 @@ include '../database.php';
     if(mysqli_num_rows($result) == 0){
       ?>
       <div class="alert alert-warning" role="alert">
-            <strong>Attenzione!</strong> Non sono presenti patrizi nel database.
+          Non sono presenti patrizi non confermati nel database.
           </div>
       <?php
       }else{
@@ -164,16 +139,12 @@ include '../database.php';
             echo("<th>padre</th>");
             echo("<th>madre</th>");
             echo("<th>diritto di voto</th>");
-        //    echo("<th>vivente</th>");
-        //echo("<th>data inserimento</th>");
-        //echo("<th>data morte</th>");
-        //echo("<th>data perdita patrizio</th>");
         echo("<th>telefono</th>");
         echo("<th>email</th>");
         echo("<th>via</th>");
         echo("<th>nap</th>");
         echo("<th>localit&agrave;</th>");
-        echo("<th>foto</th>");
+        echo("<th>confermato</th>");
 
             //echo("<th>data inserimento</th>");
             //echo("<th>data morte</th>");
@@ -210,9 +181,7 @@ include '../database.php';
             $nap=$row['nap'];
             $localita=$row['localita'];
             $foto=$row['foto'];
-            //$data_inserimento=date_create($row['data_inserimento']);
-            //$data_morte=date_create($row['data_morte']);
-            //$data_perdita_patrizio=date_create($row['data_perdita_patrizio']);
+            $confermato=$row['confermato'];
             //campi
 
 
@@ -229,43 +198,20 @@ include '../database.php';
             echo("<td>" . $padre . "</td>");
             echo("<td>" . $madre . "</td>");
             echo("<td>".$diritto_di_voto."</td>");
-          //  echo("<td>".$vivente."</td>");
-            //echo("<td>".$inserimento."</td>");
-           // echo("<td>".$morte."</td>");
-            //echo("<td>".$perdita."</td>");
             echo("<td>".$telefono."</td>");
             echo("<td>".$email."</td>");
             echo("<td>".$via."</td>");
             echo("<td>".$nap."</td>");
             echo("<td>".$localita."</td>");
-            echo("<td>".$foto."</td>");
-            //echo("<td>".date_format($data_inserimento, 'd.m.Y')."</td>");
-            //echo("<td>".date_format($data_morte, 'd.m.Y')."</td>");
-            //echo("<td>".date_format($data_perdita_patrizio, 'd.m.Y')."</td>");
-            //2 link che mi inviano alla pagina di modifica/cancellazione/inserimento, passando id e modalità
-            echo('<td><a href="update.php?id=' . $row['id'] . '"><button class="btn btn-warning" type="button">Modifica</button></a></td>');
-            //echo('<td><a href="#"><button class="btn btn-danger" type="button">Elimina</button></a></td>');
+            echo("<td>".$confermato."</td>");
+            echo('<td><a href="mod_non_confermati.php?id=' . $row['id'] . '"><button class="btn btn-warning" type="button">Modifica</button></a></td>');
             echo('</tr>');
             //campo nascosto dove tengo in memoria l'id
             echo("<input type=\"hidden\" name=\"id\" value=$id>"); 
 	    } 
         echo('</tbody>');
         echo('</table>');
-        //link che mi invia alla pagina di modifica/cancellazione/inserimento, passando la modalità
 
-
-
-
-
-        echo("<div class='btn-toolbar'>");
-            echo("<div class='btn-group'>");
-              echo('<a href="addPatrizio.php"><button class="btn btn-primary" type="button">Aggiungi Nuovo</button></a>');
-              echo('<a target = "_blank" href="pdf/esporta_catalogo.php"><button class="btn btn-success" type="button">Esporta catalogo in pdf</button></a>');
-              echo('<a target = "_blank" href="pdf/esporta_excel.php"><button class="btn btn-warning" type="button">Esporta catalogo in excel</button></a>');
-            echo("</div>");
-        echo("</div>");
-    
-    
 
 
     //chiudo la connessione

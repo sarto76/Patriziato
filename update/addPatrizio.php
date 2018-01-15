@@ -326,7 +326,7 @@ include '../database.php';
         '$telefono','$email','$via',
         $nap,'$localita','$padre','$madre','$foto',0)";
 
-        echo($sql);
+       // echo($sql);
 
         if (!$connection->query($sql)) {
             //printf("Errormessage: %s\n", $connection->error);
