@@ -1,6 +1,6 @@
 <?php
 session_start();
-//se login effettuato vai alla pagina catel
+//se scelta effettuato vai alla pagina catel
 if(isset($_SESSION['username'])){
     header('Location: catel.php');
 }
@@ -73,7 +73,7 @@ if(isset($_POST['login'])){
 	$result->store_result();
 	$check_user = $result->num_rows;
 	$result->close();
-	if($check_user>0)//se login avviene con successo
+	if($check_user>0)//se scelta avviene con successo
 	{
     //salvo il nome utente 
     $_SESSION["username"] = $username;

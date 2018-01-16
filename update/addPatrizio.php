@@ -12,6 +12,7 @@ include '../database.php';
 <!-- <script src="css/assets/js/docs.min.js"></script> -->
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../css/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 
 
 <script type="text/javascript">
@@ -444,10 +445,12 @@ include '../database.php';
 
 
     echo("<img id='blah' name='blah' height='52' width='42'>");
-
-
     echo("<p></p>");
+    echo("<div class='g-recaptcha' data-sitekey='6LdJ7EAUAAAAACb2KQl9BU3O523ed8Qz2q_s8a0Y'></div>");
+    echo("<p></p>");
+
     echo('<input class="btn btn-primary" type="submit" value="Invia richiesta" name="butt"></input>');
+
 
 
     echo('</form>');
