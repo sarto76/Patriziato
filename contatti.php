@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-if(isset($_SESSION['countContatti'])) {
-    $_SESSION['countContatti'] = $_SESSION ['countContatti'] + 1;
-}
-else{
-    $_SESSION['countContatti']=1;
-}
 
 ?>
 <!DOCTYPE html>

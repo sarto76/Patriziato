@@ -3,7 +3,9 @@ session_start();
 include '../database.php';
 $connection = Database::getConnection();
 
-
+include_once '../admin/Counter.php';
+$c=new Counter();
+$c->write("../admin/update.txt");
 
 if (isset($_POST['login'])) {
     //echo("isset");

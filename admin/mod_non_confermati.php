@@ -84,7 +84,7 @@ include '../database.php';
     <meta charset="utf-8">
 
 
-    <title>Modifica dati catalogo elettorale</title>
+    <title>Richieste Patrizi</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../css/dist/css/bootstrap.min.css" rel="stylesheet">

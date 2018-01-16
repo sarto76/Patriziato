@@ -144,16 +144,16 @@ include '../database.php';
 
     <?php
 
-    if (isset($_GET['id'])) {
-        $_SESSION["id"] = $_GET['id'];
-    }
-
 
     //se ho cliccato  il tasto esegui (update o delete)
     if (isset($_POST['butt'])) {
         $connection = Database::getConnection();
         //riprendo i valori necessari
-        $id = $_SESSION['id'];
+        $sql = "select max(id) from patrizio";
+        $result = $connection->query($sql);
+        $row = mysqli_fetch_array($result);
+        $id = $row[0]+1;
+
 
 
         // $no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
@@ -333,7 +333,8 @@ include '../database.php';
             echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
         }
         //$sql2 = trim(str_replace("'","\'", $sql));
-        $log = "insert into log (id_patrizio,data_att) values ($id,now())";
+        $timestamp = date("Y-m-d H:i:s");
+        $log = "insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
         if (!$connection->query($log)) {
 
             printf("Errormessage: %s\n", $connection->error);
@@ -344,8 +345,6 @@ include '../database.php';
     }
 
 
-    $id = $_SESSION['id'];
-    //echo($id);
 
     ?>
     <!-- Static navbar -->
@@ -389,9 +388,6 @@ include '../database.php';
     //form
     echo('<form method="POST" enctype="multipart/form-data" action="addPatrizio.php" class="form-vertical">');
 
-    //id nascosto
-    //$id=$row['id'];
-    echo('<input type="hidden" name="id1">');
 
 
     echo('<label >Numero registro:</label>');

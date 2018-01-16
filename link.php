@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-if(isset($_SESSION['countLink'])) {
-    $_SESSION['countLink'] = $_SESSION ['countLink'] + 1;
-}
-else{
-    $_SESSION['countLink']=1;
-}
 
 include 'database.php';
 ?>

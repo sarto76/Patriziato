@@ -1,14 +1,6 @@
 <?php
 session_start();
 
-if(isset($_SESSION['countDocs'])) {
-    $_SESSION['countDocs'] = $_SESSION ['countDocs'] + 1;
-}
-else{
-    $_SESSION['countDocs']=1;
-}
-
-
 include 'database.php';
 ?>
 <!DOCTYPE html>

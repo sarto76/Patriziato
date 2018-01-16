@@ -1,11 +1,12 @@
 <?php
 session_start();
-if(isset($_SESSION['countNews'])) {
-    $_SESSION['countNews'] = $_SESSION ['countNews'] + 1;
-}
-else{
-    $_SESSION['countNews']=1;
-}
+include_once 'admin/Counter.php';
+$c=new Counter();
+$c->write("admin/public.txt");
+
+
+
+
 include 'database.php';
 ?>
 

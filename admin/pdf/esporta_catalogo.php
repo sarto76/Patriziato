@@ -9,11 +9,12 @@ class PDF extends FPDF
     {
         $connection = Database::getConnection();
 
-        $result = $connection->query("SELECT `cognome`, `nome`, DATE_FORMAT(`data_nascita`,'%d-%m-%Y') as `data_nascita`, padre,madre
+        $result = $connection->query("SELECT `cognome`, `nome`,data_nascita, DATE_FORMAT(`data_nascita`,'%d-%m-%Y') as `data_nas`, padre,madre
                                 FROM patrizio
-                                where vivente=1 and confermato=1
+                                where vivente=1
                                 and data_perdita_patrizio is null
-                                order by cognome,data_nascita desc");
+                                and confermato=1
+                                order by cognome,data_nascita");
 
         $data = array();
         while ($row = $result->fetch_assoc()) {
@@ -68,14 +69,15 @@ $pdf->Output('patrizi.pdf','I');
 $loc = new PDF();
 $pdf=new PDF_MC_Table();
 $pdf->AddPage();
-$pdf->SetFont('Arial','',14);
+$pdf->SetFont('Arial','B',10);
 //Table with 20 rows and 4 columns
-$pdf->SetWidths(array(40,40,30,35,35));
+$pdf->SetWidths(array(40,40,22,39,39));
 //srand(microtime()*1000000);
 $dati=$loc->LoadData();
 //print_r($dati);
-
+$pdf->Row(array('Cognome','Nome','Nascita','Padre','Madre'));
+$pdf->SetFont('Arial','',10);
 for($i=0;$i<count($dati);$i++)
-    $pdf->Row(array($dati[$i]['cognome'],$dati[$i]['nome'],$dati[$i]['data_nascita'],$dati[$i]['padre'],$dati[$i]['madre']));
+    $pdf->Row(array($dati[$i]['cognome'],$dati[$i]['nome'],$dati[$i]['data_nas'],$dati[$i]['padre'],$dati[$i]['madre']));
 $pdf->Output();
 ?>

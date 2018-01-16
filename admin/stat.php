@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'Counter.php';
 if(!$_SESSION['username']){
    header("location:index.php");
    die;
@@ -111,28 +112,25 @@ include '../database.php';
        echo('<table width="100%" class="table table-striped table-bordered dt-responsive nowrap" id="catel" cellspacing="0">');
         echo('<thead>');
           echo('<tr>');
-            echo("<th>Pagina News</th>");
-            echo("<th>Pagina Info</th>");
-            echo("<th>Pagina Docs</th>");
-            echo("<th>Pagina Link</th>");
-            echo("<th>Pagina Tour</th>");
-            echo("<th>Pagina Contatti</th>");
+            echo("<th>Sezione Public</th>");
+            echo("<th>Sezione Update</th>");
           echo("</tr>");
         echo("</thead>");
         echo("<tbody>");
 			  echo('<tr>');
-          //campi 
-          echo('<td>'.$_SESSION['countNews'].'</td>');
-          echo('<td>'.$_SESSION['countInfo'].'</td>');
-          echo('<td>'.$_SESSION['countDocs'].'</td>');
-          echo('<td>'.$_SESSION['countLink'].'</td>');
-          echo('<td>'.$_SESSION['countTour'].'</td>');
-          echo('<td>'.$_SESSION['countContatti'].'</td>');
+          //campi
+        $c=new Counter();
+        $public=$c->read("public.txt");
+        $update=$c->read("update.txt");
+
+
+          echo('<td>'.$public.'</td>');
+          echo('<td>'.$update.'</td>');
+
         echo('</tr>');
         echo('</tbody>');
         echo('</table>');
-    //chiudo la connessione
-    unset($connection);
+
 	?>
 
     </div> <!-- /container -->

@@ -142,10 +142,6 @@ include '../database.php';
 
     <?php
 
-    if (isset($_GET['id'])) {
-        $_SESSION["id"] = $_GET['id'];
-    }
-
 
     //se ho cliccato  il tasto esegui (update o delete)
     if (isset($_POST['butt'])) {
@@ -165,7 +161,7 @@ include '../database.php';
             $sql = "select max(id) from patrizio";
             $result = $connection->query($sql);
             $row = mysqli_fetch_array($result);
-            $id = $row[0];
+            $id = $row[0]+1;
 
 
             // $no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
@@ -336,7 +332,8 @@ include '../database.php';
                   $nap,'$localita','$padre','$madre','$foto',0)";
 
             // echo($sql);
-            $log = "insert into log (id_patrizio,data_att) values ($id,now())";
+            $timestamp = date("Y-m-d H:i:s");
+            $log = "insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
             if (!$connection->query($sql)) {
                // printf("Errormessage: %s\n", $connection->error);
                 echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
