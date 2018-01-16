@@ -331,12 +331,12 @@ include '../database.php';
                   '$telefono','$email','$via',
                   $nap,'$localita','$padre','$madre','$foto',0)";
 
-            // echo($sql);
+             //echo($sql);
             $timestamp = date("Y-m-d H:i:s");
             $log = "insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
             if (!$connection->query($sql)) {
-               // printf("Errormessage: %s\n", $connection->error);
-                echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
+                //printf("Errormessage: %s\n", $connection->error);
+                echo('<div class="alert alert-danger">Problema di inserimento log. PF inviare una mail a patriziato.bosco@gmail.com</div>');
             }
             //$sql2 = trim(str_replace("'","\'", $sql));
 
