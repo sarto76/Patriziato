@@ -315,7 +315,7 @@ include '../database.php';
                 echo "Problema nel caricamento dell'immagine. PF inviare una mail a patriziato.bosco@gmail.com";
             }
             $foto = "images/" . $id . "/" . $imagename;
-            $foto=",foto='".$foto."'";
+            //$foto=",foto='".$foto."'";
         }
 
 

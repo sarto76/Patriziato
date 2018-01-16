@@ -235,9 +235,12 @@ if (isset($_POST['login'])) {
 <div class="container">
 
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="form-signin" autocomplete="off" id="entra">
-        <h2 class="form-signin-heading">Patriziato Bosco Gurin - Modifica dati personali</h2>
+        <h2 class="form-signin-heading">Patriziato Bosco Gurin - Gestione dati personali</h2>
 
         <br>
+        <div class="container">
+            <h3 class="form-signin-heading">Login</h3>
+            <br>
         <label for="nome">Nome</label>
         <input type="text" name="nome" id="nome" class="form-control" placeholder="es. Luigi" required autofocus autocomplete="off">
         <p></p>
@@ -258,19 +261,19 @@ if (isset($_POST['login'])) {
         <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" id="login" style="display: none;" >Accedi</button>
         <div id="errore"></div>
         <div class="alert alert-danger" id="errore" style="display: none;"></div>
-
+        </div>
 
     </form>
     <p></p>
 
 
-</div> <!-- /container -->
-<div class="navbar ">
-    <div class="container well">
-        <b>Nel caso vi fossero problemi di accesso o si volesse inserire un nuovo patrizio inviare una e-mail a <a href="mailto:patriziato.bosco@gmail.com">patriziato.bosco@gmail.com</a> indicando il problema o il nome, cognome e data di nascita del nuovo patrizio da inserire.</b>
-    </div>
-</div>
 
+
+    <div class="container well">
+        <b>Non riesci ad accedere? <a href="addPatrizio.php">Registrati</a> come nuovo patrizio per permettere la verifica dei tuoi dati.</b>
+    </div>
+
+</div> <!-- /container -->
 
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="assets/js/ie10-viewport-bug-workaround.js"></script>

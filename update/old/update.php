@@ -315,7 +315,7 @@ include '../database.php';
                 echo "Failed to upload your image.";
             }
             $foto = "images/" . $id . "/" . $imagename;
-            $foto=",foto='".$foto."'";
+            //$foto=",foto='".$foto."'";
         }
 
 

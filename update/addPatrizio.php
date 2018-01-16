@@ -149,200 +149,211 @@ include '../database.php';
 
     //se ho cliccato  il tasto esegui (update o delete)
     if (isset($_POST['butt'])) {
-        $connection = Database::getConnection();
-        //setto l'id al più alto esistente (per la foto
-        $sql = "select max(id) from patrizio";
-        $result = $connection->query($sql);
-        $row = mysqli_fetch_array($result);
-        $id = $row[0];
+        //print_r($_POST['g-recaptcha-response']);
+        $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=6LdJ7EAUAAAAANCTxxpQJ1AzjXSUe9AIiUYZM_Sg&response='.$_POST['g-recaptcha-response']);
 
-
-        // $no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
-        $cognome = mysqli_real_escape_string($connection, $_POST['cognome']);
-        $nome = mysqli_real_escape_string($connection, $_POST['nome']);
-        $data_nascita = mysqli_real_escape_string($connection, $_POST['data_nascita']);
-
-        $nas = explode('-', $data_nascita);
-
-        $giorno = $nas[0];
-        $mese = $nas[1];
-        $anno = $nas[2];
-        $data_nascita = $anno . '-' . $mese . '-' . $giorno;
-
-        $imagetemp = $_FILES['foto']['tmp_name'];
-
-        $imagename = $_FILES['foto']['name'];
-        //Stores the filetype e.g image/jpeg
-        $imagetype = $_FILES['foto']['type'];
-        //Stores any error codes from the upload.
-        $imageerror = $_FILES['foto']['error'];
-
-        //The path you wish to upload the image to
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/Patriziato/update/images/" . $id . "/";
-
-        if (!file_exists($imagePath)) {
-            mkdir($imagePath, 0777, true);
+        $responseDecoded  = json_decode($response);
+        if ( $responseDecoded->success == false ) {
+            echo('<div class="alert alert-danger">Errore, cliccare su <i>Non sono un robot</i></div>');
+            //exit();
         }
+        else {
 
 
-        function is_dir_empty($dir)
-        {
-            if (!is_readable($dir)) return NULL;
-            return (count(scandir($dir)) == 2);
-
-        }
-
-        function deleteDir($dirPath)
-        {
-            if (!is_dir($dirPath)) {
-                throw new InvalidArgumentException("$dirPath must be a directory");
-            }
-            if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-                $dirPath .= '/';
-            }
-            $files = glob($dirPath . '*', GLOB_MARK);
-            foreach ($files as $file) {
-                if (is_dir($file)) {
-                    deleteDir($file);
-                } else {
-                    unlink($file);
-                }
-            }
-            rmdir($dirPath);
-        }
-
-        function make_thumb($tipo, $src, $dest, $desired_width, $desired_h)
-        {
+            $connection = Database::getConnection();
+            //setto l'id al più alto esistente (per la foto
+            $sql = "select max(id) from patrizio";
+            $result = $connection->query($sql);
+            $row = mysqli_fetch_array($result);
+            $id = $row[0];
 
 
-            switch ($tipo) {
-                case '2':
-                    $source_image = imagecreatefromjpeg($src);
-                    break;
+            // $no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
+            $cognome = mysqli_real_escape_string($connection, $_POST['cognome']);
+            $nome = mysqli_real_escape_string($connection, $_POST['nome']);
+            $data_nascita = mysqli_real_escape_string($connection, $_POST['data_nascita']);
 
-                case '3':
-                    $source_image = imagecreatefrompng($src);
-                    break;
+            $nas = explode('-', $data_nascita);
 
-                case '1':
-                    $source_image = imagecreatefromgif($src);
-                    break;
+            $giorno = $nas[0];
+            $mese = $nas[1];
+            $anno = $nas[2];
+            $data_nascita = $anno . '-' . $mese . '-' . $giorno;
 
-                default:
-                    throw new InvalidArgumentException('Il File "' . $src . '" non è un tipo di immagine valido. Sono permessi solo jpg, png o gif.');
-                    break;
+            $imagetemp = $_FILES['foto']['tmp_name'];
 
-            }
+            $imagename = $_FILES['foto']['name'];
+            //Stores the filetype e.g image/jpeg
+            $imagetype = $_FILES['foto']['type'];
+            //Stores any error codes from the upload.
+            $imageerror = $_FILES['foto']['error'];
 
-            /* read the source image */
-            //$source_image = imagecreatefromjpeg($src);
-            $width = imagesx($source_image);
-            $height = imagesy($source_image);
+            //The path you wish to upload the image to
+            $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/Patriziato/update/images/" . $id . "/";
 
-            $desired_height = $desired_h;
-
-            /* create a new, "virtual" image */
-            $virtual_image = imagecreatetruecolor($desired_width, $desired_height);
-
-
-            imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
-
-            /* create the physical thumbnail image to its destination */
-            imagejpeg($virtual_image, $dest);
-        }
-
-
-        if ($_FILES['foto']['size'] == 0) {
-            $foto = "";
-        } else {
-
-            //se c'è qualcosa nella directory la cancello e la ricreo
-            if (!is_dir_empty($imagePath)) {
-                deleteDir($imagePath);
+            if (!file_exists($imagePath)) {
                 mkdir($imagePath, 0777, true);
             }
 
 
-            if (is_uploaded_file($imagetemp)) {
-                if (move_uploaded_file($imagetemp, $imagePath . $imagename)) {
-                    //echo "Sussecfully uploaded your image.";
-                    $imagedetails = getimagesize($imagePath . $imagename);
-                    $width_orig = $imagedetails[0];
-                    $height_orig = $imagedetails[1];
-                    $type = $imagedetails[2];
+            function is_dir_empty($dir)
+            {
+                if (!is_readable($dir)) return NULL;
+                return (count(scandir($dir)) == 2);
 
-                    $width = 100;
-                    $height = $width / ($width_orig / $height_orig);
-                    //print_r("aaa " . $type);
-                    make_thumb($type, $imagePath . $imagename, $imagePath . "tmb_" . $imagename, $width, $height);
+            }
+
+            function deleteDir($dirPath)
+            {
+                if (!is_dir($dirPath)) {
+                    throw new InvalidArgumentException("$dirPath must be a directory");
+                }
+                if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+                    $dirPath .= '/';
+                }
+                $files = glob($dirPath . '*', GLOB_MARK);
+                foreach ($files as $file) {
+                    if (is_dir($file)) {
+                        deleteDir($file);
+                    } else {
+                        unlink($file);
+                    }
+                }
+                rmdir($dirPath);
+            }
+
+            function make_thumb($tipo, $src, $dest, $desired_width, $desired_h)
+            {
+
+
+                switch ($tipo) {
+                    case '2':
+                        $source_image = imagecreatefromjpeg($src);
+                        break;
+
+                    case '3':
+                        $source_image = imagecreatefrompng($src);
+                        break;
+
+                    case '1':
+                        $source_image = imagecreatefromgif($src);
+                        break;
+
+                    default:
+                        throw new InvalidArgumentException('Il File "' . $src . '" non è un tipo di immagine valido. Sono permessi solo jpg, png o gif.');
+                        break;
+
+                }
+
+                /* read the source image */
+                //$source_image = imagecreatefromjpeg($src);
+                $width = imagesx($source_image);
+                $height = imagesy($source_image);
+
+                $desired_height = $desired_h;
+
+                /* create a new, "virtual" image */
+                $virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+
+
+                imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
+
+                /* create the physical thumbnail image to its destination */
+                imagejpeg($virtual_image, $dest);
+            }
+
+
+            if ($_FILES['foto']['size'] == 0) {
+                $foto = "";
+            } else {
+
+                //se c'è qualcosa nella directory la cancello e la ricreo
+                if (!is_dir_empty($imagePath)) {
+                    deleteDir($imagePath);
+                    mkdir($imagePath, 0777, true);
+                }
+
+
+                if (is_uploaded_file($imagetemp)) {
+                    if (move_uploaded_file($imagetemp, $imagePath . $imagename)) {
+                        //echo "Sussecfully uploaded your image.";
+                        $imagedetails = getimagesize($imagePath . $imagename);
+                        $width_orig = $imagedetails[0];
+                        $height_orig = $imagedetails[1];
+                        $type = $imagedetails[2];
+
+                        $width = 100;
+                        $height = $width / ($width_orig / $height_orig);
+                        //print_r("aaa " . $type);
+                        make_thumb($type, $imagePath . $imagename, $imagePath . "tmb_" . $imagename, $width, $height);
+                    } else {
+                        echo "Problema nel caricamento dell'immagine. PF inviare una mail a patriziato.bosco@gmail.com";
+                    }
                 } else {
                     echo "Problema nel caricamento dell'immagine. PF inviare una mail a patriziato.bosco@gmail.com";
                 }
-            } else {
-                echo "Problema nel caricamento dell'immagine. PF inviare una mail a patriziato.bosco@gmail.com";
+                $foto = "../update/images/" . $id . "/" . $imagename;
             }
-            $foto = "../update/images/" . $id . "/" . $imagename;
-            $foto = ",foto='" . $foto . "'";
-        }
 
-        $telefono = mysqli_real_escape_string($connection, $_POST['telefono']);
-        $email = mysqli_real_escape_string($connection, $_POST['email']);
-        $via = mysqli_real_escape_string($connection, $_POST['via']);
-        $nap = mysqli_real_escape_string($connection, $_POST['nap']);
-        if ($nap == '')
-            $nap = 'null';
+            $telefono = mysqli_real_escape_string($connection, $_POST['telefono']);
+            $email = mysqli_real_escape_string($connection, $_POST['email']);
+            $via = mysqli_real_escape_string($connection, $_POST['via']);
+            $nap = mysqli_real_escape_string($connection, $_POST['nap']);
+            if ($nap == '')
+                $nap = 'null';
 
 
+            $localita = mysqli_real_escape_string($connection, $_POST['localita']);
+            $padre = mysqli_real_escape_string($connection, $_POST['padre']);
+            $madre = mysqli_real_escape_string($connection, $_POST['madre']);
+            //$no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
+
+            $date = new DateTime($data_nascita);
+            $now = new DateTime();
+            $anni = $date->diff($now)->format("%Y");
+
+            $diritto_di_voto = 0;
+            if ($anni > 17) {
+                $diritto_di_voto = 1;
+            }
+
+            //$diritto_di_voto = mysqli_real_escape_string($connection, $_POST['diritto_di_voto']);
 
 
-        $localita = mysqli_real_escape_string($connection, $_POST['localita']);
-        $padre = mysqli_real_escape_string($connection, $_POST['padre']);
-        $madre = mysqli_real_escape_string($connection, $_POST['madre']);
-        //$no_registro = mysqli_real_escape_string($connection, $_POST['no_registro']);
+            if (!isset($_POST['password']) || trim($_POST['password']) == '') {
+                $password = "";
+            } else {
+                $password = md5(mysqli_real_escape_string($connection, $_POST['password']));
+                $password = "password='" . $password . "',";
+            }
 
-        $date = new DateTime($data_nascita);
-        $now = new DateTime();
-        $anni=$date->diff($now)->format("%Y");
+            //query di inserimento con confermato a 0
+            $sql = "insert into patrizio(cognome,nome,data_nascita,vivente,data_inserimento,diritto_di_voto,
+                    telefono,email,via,nap,localita,padre,madre,foto,confermato)  
+                    values ('$cognome','$nome','$data_nascita',1,
+                  NOW(),'$diritto_di_voto',
+                  '$telefono','$email','$via',
+                  $nap,'$localita','$padre','$madre','$foto',0)";
 
-        $diritto_di_voto=0;
-        if($anni>17){
-            $diritto_di_voto=1;
-        }
+            // echo($sql);
+            $log = "insert into log (id_patrizio,data_att) values ($id,now())";
+            if (!$connection->query($sql)) {
+               // printf("Errormessage: %s\n", $connection->error);
+                echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
+            }
+            //$sql2 = trim(str_replace("'","\'", $sql));
 
-        //$diritto_di_voto = mysqli_real_escape_string($connection, $_POST['diritto_di_voto']);
+            else if (!$connection->query($log)) {
 
-
-        if (!isset($_POST['password']) || trim($_POST['password']) == '') {
-            $password = "";
-        } else {
-            $password = md5(mysqli_real_escape_string($connection, $_POST['password']));
-            $password = "password='" . $password . "',";
-        }
-
-        //query di inserimento con confermato a 0
-        $sql = "insert into patrizio(cognome,nome,data_nascita,vivente,data_inserimento,diritto_di_voto,
-        telefono,email,via,nap,localita,padre,madre,foto,confermato)  
-        values ('$cognome','$nome','$data_nascita',1,
-        NOW(),'$diritto_di_voto',
-        '$telefono','$email','$via',
-        $nap,'$localita','$padre','$madre','$foto',0)";
-
-       // echo($sql);
-
-        if (!$connection->query($sql)) {
-            //printf("Errormessage: %s\n", $connection->error);
-            echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
-        }
-        //$sql2 = trim(str_replace("'","\'", $sql));
-        $log = "insert into log (id_patrizio,data_att) values ($id,now())";
-        if (!$connection->query($log)) {
-
-            //printf("Errormessage: %s\n", $connection->error);
-            echo "Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com";
-        }
-
-        echo('<div class="alert alert-success">Richiesta inviata correttamente. 
+                //printf("Errormessage: %s\n", $connection->error);
+                echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
+            }
+            else {
+                echo('<div class="alert alert-success">Richiesta inviata correttamente. 
             Dopo la nostra verifica verr&agrave; inserito nel catalogo patriziale. Se ci fossero dei problemi la contatteremo.</div>');
+            }
+
+        }
     }
 
 
