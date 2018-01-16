@@ -1,6 +1,14 @@
 <?php
 session_start();
-$_SESSION['countTour'] = $_SESSION ['countTour'] + 1;
+
+
+if(isset($_SESSION['countTour'])) {
+    $_SESSION['countTour'] = $_SESSION ['countTour'] + 1;
+}
+else{
+    $_SESSION['countTour']=1;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

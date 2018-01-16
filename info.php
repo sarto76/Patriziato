@@ -1,6 +1,16 @@
 <?php
 session_start();
-$_SESSION['countInfo'] = $_SESSION ['countInfo'] + 1;
+
+
+if(isset($_SESSION['countInfo'])) {
+    $_SESSION['countInfo'] = $_SESSION ['countInfo'] + 1;
+}
+else{
+    $_SESSION['countInfo']=1;
+}
+
+
+
 include 'database.php';
 ?>
 <!DOCTYPE html>

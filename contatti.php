@@ -1,6 +1,13 @@
 <?php
 session_start();
-$_SESSION['countContatti'] = $_SESSION['countContatti'] + 1;
+
+if(isset($_SESSION['countContatti'])) {
+    $_SESSION['countContatti'] = $_SESSION ['countContatti'] + 1;
+}
+else{
+    $_SESSION['countContatti']=1;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
