@@ -9,6 +9,7 @@ include '../database.php';
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
@@ -17,7 +18,7 @@ include '../database.php';
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>Statistiche</title>
+    <title>Gestione Catalogo Elettorale</title>
 
     <!-- Bootstrap core CSS -->
     <!-- <link href="css/dist/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -63,20 +64,18 @@ include '../database.php';
     <div class="container">
 
         <?php
-        $page = 'stat';
-        $titolo = 'Stat';
+        $page = 'non_confermati';
+        $titolo = 'Richieste';
         include('menu.php');
 
         ?>
+
     <!-- datatable -->   
     <script type="text/javascript">
     $(document).ready(function() {
       $('#catel').DataTable( {
-        "ordering": false,
+      "order": [[ 1, "asc" ]],
         "deferRender": true,
-        "bFilter": false,
-        "bInfo": false,
-        "paging": false,
         "language": {
             "sEmptyTable":     "Nessun dato presente nella tabella",
             "sInfo":           "Vista da _START_ a _END_ di _TOTAL_ elementi",
@@ -102,35 +101,119 @@ include '../database.php';
         }
       } );
     } );
+
+
+
     </script>
+
+
     
     <?php
     //titolo pagina
-    echo('<h2>Visite Totali</h2>');   
-      //tabella              
-       echo('<table width="100%" class="table table-striped table-bordered dt-responsive nowrap" id="catel" cellspacing="0">');
+    echo('<h2>Elenco richieste iscrizione a registro</h2><br>');
+    $connection=Database::getConnection();
+
+     $result=$connection->query("SELECT `no_registro`,id, `cognome`, `nome`, `data_nascita`, padre,madre,
+                               diritto_di_voto, `vivente`, data_inserimento,data_morte,diritto_di_voto,data_perdita_patrizio,telefono,email,
+                                via, nap,localita,foto,confermato
+                                FROM patrizio
+                                where vivente=1
+                                and data_perdita_patrizio is null
+                                and confermato=0
+                                ");
+       
+    if(mysqli_num_rows($result) == 0){
+      ?>
+      <div class="alert alert-warning" role="alert">
+          Non sono presenti patrizi non confermati nel database.
+          </div>
+      <?php
+      }else{
+      echo('<table width="100%" class="table table-striped table-bordered dt-responsive nowrap" id="catel" cellspacing="0">');
         echo('<thead>');
           echo('<tr>');
-            echo("<th>Pagina News</th>");
-            echo("<th>Pagina Info</th>");
-            echo("<th>Pagina Docs</th>");
-            echo("<th>Pagina Link</th>");
-            echo("<th>Pagina Tour</th>");
-            echo("<th>Pagina Contatti</th>");
+            echo("<th>no registro</th>");
+            echo("<th>cognome</th>");
+            echo("<th>nome</th>");
+            echo("<th><span style='display:none;'>YYYYMMDD</span>data nascita</th>");
+            echo("<th>padre</th>");
+            echo("<th>madre</th>");
+            echo("<th>diritto di voto</th>");
+        echo("<th>telefono</th>");
+        echo("<th>email</th>");
+        echo("<th>via</th>");
+        echo("<th>nap</th>");
+        echo("<th>localit&agrave;</th>");
+        echo("<th>confermato</th>");
+
+            //echo("<th>data inserimento</th>");
+            //echo("<th>data morte</th>");
+            //echo("<th>data perdita patrizio</th>");
+            echo("<th></th>");
+      //      echo("<th></th>");
           echo("</tr>");
         echo("</thead>");
         echo("<tbody>");
-			  echo('<tr>');
-          //campi 
-          echo('<td>'.$_SESSION['countNews'].'</td>');
-          echo('<td>'.$_SESSION['countInfo'].'</td>');
-          echo('<td>'.$_SESSION['countDocs'].'</td>');
-          echo('<td>'.$_SESSION['countLink'].'</td>');
-          echo('<td>'.$_SESSION['countTour'].'</td>');
-          echo('<td>'.$_SESSION['countContatti'].'</td>');
-        echo('</tr>');
+        }
+		while($row=mysqli_fetch_array($result)){
+			echo('<tr>');
+            $no_registro=$row['no_registro'];
+            $id=$row['id'];
+            $cognome=$row['cognome'];
+            $nome=$row['nome'];
+            if(!empty($row['data_nascita']));
+            {
+                $data_nascita = date_create($row['data_nascita']);
+            }
+
+
+            $diritto_di_voto=$row['diritto_di_voto'];
+            $vivente=$row['vivente'];
+            $padre=$row['padre'];
+            $madre=$row['madre'];
+            $inserimento=$row['data_inserimento'];
+            $morte=$row['data_morte'];
+            $dir_voto=$row['diritto_di_voto'];
+            $perdita=$row['data_perdita_patrizio'];
+            $telefono=$row['telefono'];
+            $email=$row['email'];
+            $via=$row['via'];
+            $nap=$row['nap'];
+            $localita=$row['localita'];
+            $foto=$row['foto'];
+            $confermato=$row['confermato'];
+            //campi
+
+
+            echo("<td>".$no_registro."</td>");
+            echo("<td>".$cognome."</td>");
+            echo("<td>".$nome."</td>");
+            if (!empty($row['data_nascita']))
+            {
+                echo("<td><span  style='display:none;'>" . date_format($data_nascita, 'YYYYMMDD') . "</span>" . date_format($data_nascita, 'd.m.Y') . "</td>");
+            }
+            else{
+                echo("<td></td>");
+            }
+            echo("<td>" . $padre . "</td>");
+            echo("<td>" . $madre . "</td>");
+            echo("<td>".$diritto_di_voto."</td>");
+            echo("<td>".$telefono."</td>");
+            echo("<td>".$email."</td>");
+            echo("<td>".$via."</td>");
+            echo("<td>".$nap."</td>");
+            echo("<td>".$localita."</td>");
+            echo("<td>".$confermato."</td>");
+            echo('<td><a href="mod_non_confermati.php?id=' . $row['id'] . '"><button class="btn btn-warning" type="button">Modifica</button></a></td>');
+            echo('</tr>');
+            //campo nascosto dove tengo in memoria l'id
+            echo("<input type=\"hidden\" name=\"id\" value=$id>"); 
+	    } 
         echo('</tbody>');
         echo('</table>');
+
+
+
     //chiudo la connessione
     unset($connection);
 	?>

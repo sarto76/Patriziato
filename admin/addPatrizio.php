@@ -320,11 +320,11 @@ include '../database.php';
 
         //query di inserimento
         $sql = "insert into patrizio(no_registro,cognome,nome,data_nascita,vivente,data_inserimento,diritto_di_voto,
-        telefono,email,via,nap,localita,padre,madre,foto)  
+        telefono,email,via,nap,localita,padre,madre,foto,confermato)  
         values ('$no_registro','$cognome','$nome','$data_nascita',1,
         NOW(),'$diritto_di_voto',
         '$telefono','$email','$via',
-        $nap,'$localita','$padre','$madre','$foto')";
+        $nap,'$localita','$padre','$madre','$foto',1)";
 
         //echo($sql);
 

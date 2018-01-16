@@ -52,9 +52,9 @@ if(isset($_GET['id'])){
 }
 
 $connection = Database::getConnection();
-$result = $connection->query("SELECT cognome,nome, via,nap,localita
+$result = $connection->query("SELECT cognome,SUBSTRING_INDEX(nome, ' ', 1) as nome, via,nap,localita
                                 FROM patrizio
-                                where id=$id");
+                                where id=$id and confermato=1");
 
 $data = array();
 while ($row = $result->fetch_assoc()) {

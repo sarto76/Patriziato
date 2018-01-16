@@ -63,37 +63,12 @@ include '../database.php';
 
 <div class="container">
 
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="catel.php">Gestione CatE</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+    <?php
+    $page = 'tessere_richieste';
+    $titolo = 'Tessere';
+    include('menu.php');
 
-                    <li><a href="catel.php">Catalogo elettorale</a></li>
-                    <li class="active"><a href="tessere_richieste.php">Tessere in sospeso</a></li>
-                    <li><a href="news.php">News</a></li>
-                    <li><a href="info.php">Info</a></li>
-                    <li><a href="docs.php">Docs</a></li>
-                    <li><a href="link.php">Link</a></li>
-                    <li><a href="prop.php">Prop</a></li>
-                    <li><a href="stat.php">Stat</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span><?php echo " ".$_SESSION["username"]?></a></li>
-                    <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-    </nav>
+    ?>
 
     <!-- datatable -->
     <script type="text/javascript">
@@ -143,6 +118,7 @@ include '../database.php';
                                   where p.id=t.fk_patrizio
                                   and t.fk_stagione=s.idstagione
                                   and t.attiva=0
+                                  and p.confermato=1
                                   order by no_registro,data_richiesta
                                 ");
 

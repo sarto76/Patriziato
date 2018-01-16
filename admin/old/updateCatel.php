@@ -135,11 +135,11 @@ include '../database.php';
         //query di inserimento
         $sql = "INSERT INTO patrizio
                 (no_registro, cognome, nome, data_nascita, vivente, data_inserimento, data_morte, 
-                data_perdita_patrizio)
+                data_perdita_patrizio,confermato)
 				VALUES('$no_registro','$cognome','$nome','$data_nascita','$vivente',
                 ".($data_inserimento==NULL ? "NULL" : "'$data_inserimento'").",
                 ".($data_morte==NULL ? "NULL" : "'$data_morte'").",
-                ".($data_perdita_patrizio==NULL ? "NULL" : "'$data_perdita_patrizio'").")";
+                ".($data_perdita_patrizio==NULL ? "NULL" : "'$data_perdita_patrizio'").",1)";
         //controllo query
 		if (mysqli_query($connection, $sql)) {
 			header('Location: catel.php');
@@ -304,7 +304,7 @@ include '../database.php';
         if($result=$connection->query("SELECT *,
                                  IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                  as `diritto_di_voto`
-                                 FROM patrizio WHERE id=$id")){
+                                 FROM patrizio WHERE id=$id and confermato=1")){
         //form
         echo('<form method="POST" action="updateCatel.php" class="form-horizontal">');
         while($row=mysqli_fetch_array($result)){
@@ -356,7 +356,7 @@ include '../database.php';
             echo('</div>');
             }
             //figlio/a
-            if($result=$connection->query("SELECT id, cognome, nome FROM patrizio")){
+            if($result=$connection->query("SELECT id, cognome, nome FROM patrizio WHERE confermato=1")){
             echo('<div id="ifSon" style="display:none" class="form-group">');
             echo('<label class="control-label col-sm-2">Figlio/a:</label>');
              echo('<div class="col-sm-10">');
@@ -436,7 +436,7 @@ include '../database.php';
         if($result=$connection->query("SELECT *,
                                  IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                  as `diritto_di_voto`
-                                 FROM patrizio WHERE id=$id")){
+                                 FROM patrizio WHERE id=$id and confermato=1")){
         //form
         echo('<form method="POST" action="updateCatel.php" class="form-horizontal">');
         while($row=mysqli_fetch_array($result)){

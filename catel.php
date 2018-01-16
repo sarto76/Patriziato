@@ -133,7 +133,7 @@ include 'database.php';
      $result=$connection->query("SELECT `no_registro`, `id`, `cognome`, `nome`, `data_nascita`, 
                                 IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                 as `diritto_di_voto`, `vivente`
-                                FROM patrizio");                       
+                                FROM patrizio WHERE confermato=1");
        
     if(mysqli_num_rows($result) == 0){
       ?>

@@ -30,7 +30,7 @@ $anno = $nas[2];
 $data_nascita = $anno . '-' . $mese . '-' . $giorno;
 
 
-$sql = "select * from patrizio where nome like '%".$nome."%' AND cognome like '%".$cognome."%' AND data_nascita='$data_nascita'";
+$sql = "select * from patrizio where nome like '%".$nome."%' AND cognome like '%".$cognome."%' AND data_nascita='$data_nascita' and confermato=1";
 //$result = $connection->prepare($sql);
 //$result->bind_param('sss', $nome, $cognome, $nascita);
 //$result->execute();

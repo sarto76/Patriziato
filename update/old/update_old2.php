@@ -367,7 +367,7 @@ include '../database.php';
     if ($result = $connection->query("SELECT *,
                                  IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                  as `diritto_di_voto`
-                                 FROM patrizio WHERE id=$id")
+                                 FROM patrizio WHERE id=$id and confermato=1")
     ) {
         //form
         echo('<form method="POST" enctype="multipart/form-data" action="update.php" class="form-horizontal">');

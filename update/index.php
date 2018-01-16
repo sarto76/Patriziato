@@ -36,7 +36,7 @@ if (isset($_POST['login'])) {
             if($_POST['passVisible']==1){
 
                     $password = md5(mysqli_real_escape_string($connection, $_POST['password']));
-                    $sql = 'select id from patrizio where nome like ? AND cognome like ? AND data_nascita=? AND password=?';
+                    $sql = 'select id from patrizio where nome like ? AND cognome like ? AND data_nascita=? AND password=? and confermato=1';
 
                     $result = $connection->prepare($sql);
                     $result->bind_param('ssss', $nome, $cognome, $nascita, $password);
@@ -45,7 +45,7 @@ if (isset($_POST['login'])) {
 
             }
             else{
-                $sql = 'select id from patrizio where nome like ? AND cognome like ? AND data_nascita=?';
+                $sql = 'select id from patrizio where nome like ? AND cognome like ? AND data_nascita=? and confermato=1';
                 $result = $connection->prepare($sql);
                 $result->bind_param('sss', $nome, $cognome, $nascita);
                 //print_r("senza pass ".$_POST['password']);
