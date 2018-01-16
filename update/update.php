@@ -152,7 +152,7 @@ include '../database.php';
                 <li class="dropdown">
 
                 <li class="active"><a href="update.php">Modifica dati personali</a></li>
-                <li><a href="iscrizione.php">Iscrizione registro impianti risalita </a></li>
+       <!--         <li><a href="iscrizione.php">Iscrizione registro impianti risalita </a></li>    -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
