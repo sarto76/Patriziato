@@ -348,6 +348,10 @@ include '../database.php';
             else {
                 echo('<div class="alert alert-success">Richiesta inviata correttamente. 
             Dopo la nostra verifica verr&agrave; inserito nel catalogo patriziale. Se ci fossero dei problemi la contatteremo.</div>');
+
+                $ch = curl_init('http://api.pushingbox.com/pushingbox?devid=vA98D6A173CE777E');
+                curl_exec ($ch);
+                curl_close ($ch);
             }
 
         }

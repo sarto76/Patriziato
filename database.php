@@ -1,7 +1,7 @@
 <?php
 Class Database {
-private static $_mysqlUser='patriziato';
-	private static $_mysqlPass='LaCuntrada1';
+private static $_mysqlUser='root';
+	private static $_mysqlPass='';
 	private static $_mysqlDB='bosco_gurin';
 	private static $_hostName='localhost';
 	
