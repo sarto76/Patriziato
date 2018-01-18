@@ -145,14 +145,22 @@ include '../database.php';
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="update.php">Modifica dati personali</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
 
                 <li class="active"><a href="update.php">Modifica dati personali</a></li>
-       <!--         <li><a href="iscrizione.php">Iscrizione registro impianti risalita </a></li>    -->
+
+
+                <?php
+                //se è stata immessa la password mostro il menu, altrimenti no
+                if(isset($_SESSION['pass'])) {
+                    //echo"<li><a href='iscrizione.php'>Iscrizione registro impianti risalita </a></li>";
+                }
+                ?>
+
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
@@ -190,37 +198,6 @@ include '../database.php';
         $anno = $nas[2];
         $data_nascita = $anno . '-' . $mese . '-' . $giorno;
 
-
-        //$data_inserimento = mysqli_real_escape_string($connection, $_POST['data_inserimento']);
-        //$vivente = mysqli_real_escape_string($connection, $_POST['vivente']);
-        //$data_morte = mysqli_real_escape_string($connection, $_POST['data_morte']);
-        //$diritto_di_voto = mysqli_real_escape_string($connection, $_POST['diritto_di_voto']);
-        //$data_perdita_patrizio = mysqli_real_escape_string($connection, $_POST['data_perdita_patrizio']);
-        //riprendo id padre
-        //$id1 = $_POST['id1'];
-        //riprendo id figlio
-        //$id2 = $_POST['id2'];
-        //riprendo relazione patrizi
-        //$relazione = $_POST['idRelazione'];
-
-        /*
-        echo("<table border='1'>");
-        foreach ($_POST as $key => $value) {
-            echo "<tr>";
-            echo "<td>";
-            echo $key;
-            echo "</td>";
-            echo "<td>";
-            echo $value;
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo("</table>");
-        */
-        //print_r($_SERVER['DOCUMENT_ROOT']);
-
-        //$image = $_POST['foto'];
-        //Stores the filename as it was on the client computer.
 
         $imagetemp = $_FILES['foto']['tmp_name'];
 
@@ -385,7 +362,8 @@ include '../database.php';
 
 
     //titolo
-    echo('<h2>Modifica dati personali</h2><br>');
+    echo('<h2>Modifica dati personali</h2>');
+    echo('<h4>I campi contrassegnati con asterisco sono obbligatori</h4><br>');
     if ($result = $connection->query("SELECT *,
                                  IF((TIMESTAMPDIFF(YEAR,`data_nascita`,CURDATE())<18),'no','si') 
                                  as `diritto_di_voto`
@@ -446,46 +424,47 @@ include '../database.php';
             echo("<input type='text' class='form-control' name='email' value='$email'>");
             echo("<p></p>");
 
-            echo('<label >via:</label>');
+            echo('<label >*via:</label>');
 
             $via=$row['via'];
             echo("<input type='text' class='form-control' name='via'  value='$via'>");
             echo("<p></p>");
 
-            echo('<label >NAP:</label>');
+            echo('<label >*NAP:</label>');
 
             $nap=$row['nap'];
-            echo("<input type='text' class='form-control' name='nap'  value='$nap'>");
+            echo("<input type='text' class='form-control' name='nap'  value='$nap' required>");
             echo("<p></p>");
 
-            echo('<label >Localit&agrave;:</label>');
+            echo('<label >*Localit&agrave;:</label>');
 
             $localita=$row['localita'];
-            echo("<input type='text' class='form-control' name='localita'  value='$localita'>");
+            echo("<input type='text' class='form-control' name='localita'  value='$localita' required>");
             echo("<p></p>");
 
 
-            echo('<label >Cognome e nome del padre:</label>');
+            echo('<label >*Cognome e nome del padre:</label>');
 
             $padre=$row['padre'];
-            echo("<input type='text' class='form-control' name='padre'  value='$padre'>");
+            echo("<input type='text' class='form-control' name='padre'  value='$padre' required>");
             echo("<p></p>");
 
 
-            echo('<label >Cognome e nome della madre:</label>');
+            echo('<label >*Cognome e nome della madre:</label>');
 
             $madre=$row['madre'];
-            echo("<input type='text' class='form-control' name='madre'  value='$madre'>");
+            echo("<input type='text' class='form-control' name='madre'  value='$madre' required>");
 
             echo("<p></p>");
 
-            echo('<label >Password per futuri accessi:</label>');
+            echo('<label >*Password per futuri accessi:</label>');
+
 
             echo("<input type='password' class='form-control' name='password' id='password'>");
 
 
             echo("<p></p>");
-            echo('<label >Ripeti password:</label>');
+            echo('<label >*Ripeti password:</label>');
 
             echo("<input type='password' class='form-control' onblur='passMatch()' name='password2' id='password2'>");
 

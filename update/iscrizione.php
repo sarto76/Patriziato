@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!$_SESSION['id']) {
+if (!$_SESSION['pass']) {
     header("location:index.php");
     die;
 }
@@ -59,7 +59,6 @@ include '../database.php';
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="iscrizione.php">Iscrizione registro </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -153,7 +152,7 @@ include '../database.php';
 
                 //controllo se ha immesso i dati per la fattura
                 $id = $_SESSION['id'];
-                $dati = "select via,nap,localita,nome,cognome,diritto_di_voto from patrizio where id =$id and confermato=1";
+                $dati = "select via,nap,localita,nome,cognome,diritto_di_voto,password from patrizio where id =$id and confermato=1";
                 if (!$result = $connection->query($dati)) {
                     //printf("Errormessage: %s\n", $connection->error);
                     echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
@@ -170,12 +169,12 @@ include '../database.php';
                     $doppione = 1;
 
                 }
-                //se non ha inserito NAP e località
-                else if ($tutto[1] == "" || $tutto[2] == "") {
+                //se non ha inserito NAP e località e password
+                else if ($tutto[1] == "" || $tutto[2] == "" || $tutto[6] == "") {
 
                     if(!$mancanoDati) {
-                        echo("<div class='alert alert-danger'>Errore: " . $tutto[3] . " " . $tutto[4] . " non ha inserito via,NAP o localit&agrave;. 
-                                Per poter registrare la richiesta &egrave; necessario dapprima inserire questi dati nel menu <i>Modifica dati personali</i>.</div>");
+                        echo("<div class='alert alert-danger'>Errore: " . $tutto[3] . " " . $tutto[4] . " non ha inserito via,NAP, localit&agrave; o la password. 
+                                Per poter registrare la richiesta &egrave; necessario dapprima inserire questi dati nel menu <i><a href='update.php'>Modifica dati personali</a></i>.</div>");
                         $mancanoDati = 1;
                     }
                 }
@@ -266,15 +265,13 @@ include '../database.php';
     if ($result = $connection->query($query)) {
 
 
-
-
         //form
         echo('<form method="POST" enctype="multipart/form-data" action="iscrizione.php">');
 
         echo("<div class='form-row'>");
 
 
-        if(isset($_POST['stagione'])) {
+        if (isset($_POST['stagione'])) {
             $anni = $_POST['stagione'];
             $txt = $annoAttuale . '-' . $prossimoAnno;
             $txt2 = $scorsoAnno . '-' . $annoAttuale;
@@ -286,8 +283,7 @@ include '../database.php';
                     $testo = "
                     <option value='$txt'>$txt</option>";
                 }
-            }
-            else{
+            } else {
                 if ($txt == $anni) {
                     $testo = "
                     <option value='$txt' selected>$txt</option>
@@ -300,8 +296,7 @@ include '../database.php';
             }
 
 
-        }
-        else {
+        } else {
 
 
             //se la data va dal 1 novembre al 31 dicembre metto solo il prossimo anno
@@ -323,86 +318,105 @@ include '../database.php';
         echo("<div class='form-row'>");
 
         echo("<label for='sel1'>Scegliere la stagione:</label>");
-                echo("<select class='form-control' name='stagione' id='stagione' onchange='this.form.submit()'>");
-                echo $testo;
-                echo("</select>");
-                echo("</div>");
+        echo("<select class='form-control' name='stagione' id='stagione' onchange='this.form.submit()'>");
+        echo $testo;
+        echo("</select>");
+        echo("</div>");
 
         echo("</div>");
         echo("<p></p>");
         echo("<hr></hr>");
 
+        //creo un contatore che verifica se ci sono persone, se non ce ne sono nascondo il bottone Richiedi iscrizione
+        $i = 0;
+
         while ($row = mysqli_fetch_array($result)) {
-            $cognome=$row['cognome'];
-            $nome=$row['nome'];
+            $cognome = $row['cognome'];
+            $nome = $row['nome'];
             $nascita = mysqli_real_escape_string($connection, $row['data_nascita']);
             $nas = explode('-', $nascita);
             $giorno = $nas[0];
             $mese = $nas[1];
             $anno = $nas[2];
             $nascita = $anno . '-' . $mese . '-' . $giorno;
-            $id=$row['id'];
+            $id = $row['id'];
 
             echo('<input type="hidden" name="id[]"  value=' . $row['id'] . '>');
 
 
-
-
             echo("<div class='form-row'>");
 
-                echo("<div class='form-group col-md-4'>");
-                echo("<input type='text' class='form-control' name='nome[]' value='$nome' readonly>");
-                echo('</div>');
+            echo("<div class='form-group col-md-4'>");
+            echo("<input type='text' class='form-control' name='nome[]' value='$nome' readonly>");
+            echo('</div>');
 
-                echo("<div class='form-group col-md-4'>");
-                echo("<input type='text' class='form-control' name='cognome[]' value='$cognome' readonly> ");
-                echo('</div>');
+            echo("<div class='form-group col-md-4'>");
+            echo("<input type='text' class='form-control' name='cognome[]' value='$cognome' readonly> ");
+            echo('</div>');
 
-                echo("<div class='form-group col-md-2'>");
-                echo("<input type='text' name='data_nascita[]' id='data_nascita'  class='form-control'  value='$nascita' readonly>");
-                echo('</div>');
+            echo("<div class='form-group col-md-2'>");
+            echo("<input type='text' name='data_nascita[]' id='data_nascita'  class='form-control'  value='$nascita' readonly>");
+            echo('</div>');
 
-                echo("<div class='form-group col-md-2'>");
-                echo("<label class='form-check-label'>");
+            echo("<div class='form-group col-md-2'>");
+            echo("<label class='form-check-label'>");
 
-                $dis="";
-                $sel="Seleziona";
-                if($_SESSION['id']==$id){
-                    $dis="onclick='return false;'";
-                    $sel="Selezionato";
-                }
+            $dis = "";
+            $sel = "Seleziona";
+            if ($_SESSION['id'] == $id) {
+                $dis = "onclick='return false;'";
+                $sel = "Selezionato";
+            }
 
-                echo("<input class='form-check-input' type='checkbox' name='check[]' value=$id checked $dis> $sel");
-                echo("</label>");
-                echo("</div>");
-
+            echo("<input class='form-check-input' type='checkbox' name='check[]' value=$id checked $dis> $sel");
+            echo("</label>");
+            echo("</div>");
 
 
             echo('</div>');
             echo("<p></p>");
+
+            $i++;
         }
 
         $id = $_SESSION['id'];
         $result = $connection->query("SELECT nome,cognome,via,nap,localita FROM patrizio WHERE id=$id and confermato=1");
         $dati = $result->fetch_array(MYSQLI_ASSOC);
-        $nome=$dati['nome'];
-        $cognome=$dati['cognome'];
-        $via=$dati['via'];
-        $nap=$dati['nap'];
-        $localita=$dati['localita'];
+        $nome = $dati['nome'];
+        $cognome = $dati['cognome'];
+        $via = $dati['via'];
+        $nap = $dati['nap'];
+        $localita = $dati['localita'];
 
-        echo("<div class='form-group col-md-4'>");
-        echo('<input class="btn btn-primary" type="submit" value="Richiedi iscrizione" name="butt"></input>');
-        echo("</div>");
+        //se c'è almeno una persona nel ciclo while
+        if ($i > 0) {
+            echo("<div class='form-group col-md-4'>");
+            echo('<input class="btn btn-primary" type="submit" value="Richiedi iscrizione" name="butt"></input>');
+            echo("</div>");
+        }
+
+
         echo('</form>');
 
-        echo("<div>");
-        echo("<div class='form-group col-md-12'>");
-        echo("<div class='alert alert-info'>");
-        echo "<b>La fattura verr&agrave; inviata al seguente indirizzo: $nome $cognome, $via, $nap $localita</b>";
-        echo("</div>");
-        echo("</div>");
-        echo("</div>");
+        //se c'è almeno una persona nel ciclo while
+        if ($i > 0) {
+            echo("<div>");
+            echo("<div class='form-group col-md-12'>");
+            echo("<div class='alert alert-info'>");
+            echo "<b>La fattura verr&agrave; inviata al seguente indirizzo: $nome $cognome, $via, $nap $localita</b>";
+            echo("</div>");
+            echo("</div>");
+            echo("</div>");
+        }
+        else{
+            echo("<div>");
+            echo("<div class='form-group col-md-12'>");
+            echo("<div class='alert alert-info'>");
+            echo "<b>Ha gi&agrave; eseguito l'iscrizione per questa stagione</b>";
+            echo("</div>");
+            echo("</div>");
+            echo("</div>");
+        }
     }
 
 

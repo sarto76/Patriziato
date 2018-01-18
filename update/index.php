@@ -43,6 +43,7 @@ if (isset($_POST['login'])) {
                     $result = $connection->prepare($sql);
                     $result->bind_param('ssss', $nome, $cognome, $nascita, $password);
                     //print_r("con pass ".$password);
+                    $_SESSION["pass"] = $nome.$cognome.$nascita;
 
 
             }
@@ -272,7 +273,7 @@ if (isset($_POST['login'])) {
 
 
     <div class="container well">
-        <b>Non riesci ad accedere? <a href="addPatrizio.php">Registrati</a> come nuovo patrizio per permettere la verifica dei tuoi dati.</b>
+        <b>Non riesci ad accedere o vuoi iscrivere un nuovo patrizio? <a href="addPatrizio.php">Clicca qui</a> per permettere la verifica dei tuoi dati.</b>
     </div>
 
 </div> <!-- /container -->
