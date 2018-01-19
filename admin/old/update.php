@@ -336,8 +336,8 @@ include '../database.php';
             //printf("Errormessage: %s\n", $connection->error);
             echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
         }
-        //$sql2 = trim(str_replace("'","\'", $sql));
-        $log="insert into log (id_patrizio,data_att) values ($id,now())";
+        $timestamp = date("Y-m-d H:i:s");
+        $log="insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
         if (!$connection->query($log)) {
 
             printf("Errormessage: %s\n", $connection->error);

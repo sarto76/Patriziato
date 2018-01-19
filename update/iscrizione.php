@@ -91,7 +91,7 @@ include '../database.php';
             $stag = "select idstagione from stagione where anni='$stagione'";
             if (!$result = $connection->query($stag)) {
                 //printf("Errormessage: %s\n", $connection->error);
-                echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
             }
             $sta = $result->fetch_array(MYSQLI_NUM);
             $stag_id = $sta[0];
@@ -119,7 +119,7 @@ include '../database.php';
                     $dati = "select diritto_di_voto from patrizio where id =$val and confermato=1";
                     if (!$result = $connection->query($dati)) {
                         //printf("Errormessage: %s\n", $connection->error);
-                        echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                        echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                     }
                     $tutto = $result->fetch_array(MYSQLI_NUM);
 
@@ -141,7 +141,7 @@ include '../database.php';
                 $doppioni = "select nome,cognome from patrizio where confermato=1 and id in (select fk_patrizio from tessera where fk_stagione='$stag_id' and fk_patrizio=$val)";
                 if (!$result = $connection->query($doppioni)) {
                     //printf("Errormessage: %s\n", $connection->error);
-                    echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                    echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                 }
                 $nm = $result->fetch_array(MYSQLI_NUM);
                 $row_cnt = $result->num_rows;
@@ -155,7 +155,7 @@ include '../database.php';
                 $dati = "select via,nap,localita,nome,cognome,diritto_di_voto,password from patrizio where id =$id and confermato=1";
                 if (!$result = $connection->query($dati)) {
                     //printf("Errormessage: %s\n", $connection->error);
-                    echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                    echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                 }
                 $tutto = $result->fetch_array(MYSQLI_NUM);
 
@@ -188,7 +188,7 @@ include '../database.php';
                         //echo($sql);
                         if (!$connection->query($sql)) {
                             //printf("Errormessage: %s\n", $connection->error);
-                            echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                            echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                         }
 
 
@@ -199,17 +199,18 @@ include '../database.php';
                         //echo($sql);
                         if (!$connection->query($sql)) {
                             //printf("Errormessage: %s\n", $connection->error);
-                            echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+                            echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                         }
                     }
 
 
 
-                    $log = "insert into log (id_patrizio,data_att) values ($val,now())";
+                    $timestamp = date("Y-m-d H:i:s");
+                    $log="insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
                     if (!$connection->query($log)) {
 
                         //printf("Errormessage: %s\n", $connection->error);
-                        echo "Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com";
+                        echo('<div class="alert alert-danger">Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com</div>');
                     }
 
 

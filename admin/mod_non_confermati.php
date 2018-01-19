@@ -153,23 +153,25 @@ include '../database.php';
         telefono='$telefono',email='$email',via='$via',
         nap=$nap,localita='$localita',padre='$padre', madre='$madre' WHERE id=$id";
 
-        echo($sql);
+        //echo($sql);
+
+        $timestamp = date("Y-m-d H:i:s");
+        $log="insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
 
         if (!$connection->query($sql)) {
             //printf("Errormessage: %s\n", $connection->error);
-            echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+            echo('<div class="alert alert-danger">Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com</div>');
         }
-        //$sql2 = trim(str_replace("'","\'", $sql));
-        $log = "insert into log (id_patrizio,data_att) values ($id,now())";
-        if (!$connection->query($log)) {
+
+        else if (!$connection->query($log)) {
 
             printf("Errormessage: %s\n", $connection->error);
-            //echo "Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com";
+            echo('<div class="alert alert-danger">Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com</div>');
         }
-
-
-        //echo('<div class="alert alert-success">Modifiche effettuate con successo.</div>');
-        header('Location: non_confermati.php');
+        else {
+            //echo('<div class="alert alert-success">Modifiche effettuate con successo.</div>');
+            header('Location: non_confermati.php');
+        }
     }
 
 

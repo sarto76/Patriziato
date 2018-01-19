@@ -126,8 +126,15 @@ if (isset($_POST['login'])) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
+    <style type="text/css">
+    a:hover {
+    cursor: pointer;
+    }
+    </style>
+
 
     <script type="text/javascript">
+
 
         function isValidDate(date) {
 
@@ -152,7 +159,7 @@ if (isset($_POST['login'])) {
             }
         }
 
-
+        //funzione che non lascia cliccare il bottone enter, altrimenti uno entra anche senza mettere la password
         $(document).ready(function() {
             $('#nascita').val('');
 
@@ -164,6 +171,7 @@ if (isset($_POST['login'])) {
                     //alert('keyup 13');
                     e.preventDefault();
                     return false;
+
                 }
             });
 
@@ -226,6 +234,11 @@ if (isset($_POST['login'])) {
 
             });
         }
+
+
+
+
+
 
 
     </script>

@@ -102,6 +102,71 @@ include '../database.php';
 
 
 
+    function beforeSubmit(){
+
+        if((!$("#pass").val())||(!$("#nap").val())||(!$("#localita").val())||(!$("#padre").val())||(!$("#madre").val())) {
+            if (!$("#pass").val()) {
+
+                $("#errore_password").css('color', 'red');
+                $("#errore_password").html("Errore: non è stata immessa nessuna password. Inserirla per poter procedere alla registrazione");
+
+                $("#pass").val("pass");
+                //alert ($("#pass").val());
+            }
+            if (!$("#nap").val()) {
+
+                $("#errore_nap").css('color', 'red');
+                $("#errore_nap").html("Errore: non è stato immesso nessun nap. Inserirlo per poter procedere alla registrazione");
+
+            }
+            if (!$("#localita").val()) {
+                $("#errore_localita").css('color', 'red');
+                $("#errore_localita").html("Errore: non è stata immessa nessuna localit&agrave;. Inserirla per poter procedere alla registrazione");
+
+            }
+            if (!$("#padre").val()) {
+
+                $("#errore_padre").css('color', 'red');
+                $("#errore_padre").html("Errore: non sono stati immessi i dati del padre. Inserirli per poter procedere alla registrazione");
+
+            }
+            if (!$("#madre").val()) {
+
+                $("#errore_madre").css('color', 'red');
+                $("#errore_madre").html("Errore: non sono stati immessi i dati della madre. Inserirli per poter procedere alla registrazione");
+
+            }
+        }
+        else {
+            //alert ($("#pass").val());
+            $("#errore_nap").html( "" );
+            $("#errore_localita").html( "" );
+            $("#errore_padre").html( "" );
+            $("#errore_madre").html( "" );
+            $("#errore_password").html( "" );
+            $("#form_patrizi").submit();
+        }
+    }
+
+    //Elimina il messagio di errore dalle caselle obbligatorie vuote se vengono riempite
+    function cancErr(el){
+        var inputID = $(el).attr("id");
+        //alert (inputID);
+        if ($("#inputID").val.length===0) {
+            //alert ($("#password").val());
+        }
+        else{
+            var str1 = "errore_";
+            var err = str1.concat(inputID);
+            var errs='#'.concat(err);
+            $(errs).html( "" );
+        }
+
+    }
+
+
+
+
 </script>
 
 
@@ -180,7 +245,7 @@ include '../database.php';
 
 
     //se ho cliccato  il tasto esegui (update o delete)
-    if (isset($_POST['butt'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $connection = Database::getConnection();
         //riprendo i valori necessari
         $id = $_SESSION['id'];
@@ -337,23 +402,24 @@ include '../database.php';
         }
 
         //query di inserimento
-        $sql = "UPDATE patrizio SET cognome='$cognome',nome='$nome',data_nascita='$data_nascita',telefono='$telefono',email='$email',via='$via',nap='$nap',localita='$localita',padre='$padre',$password madre='$madre' $foto WHERE id=$id";
+        $sql = "UPDATE patrizio SET cognome='$cognome',nome='$nome',data_nascita='$data_nascita',telefono='$telefono',email='$email',via='$via',nap='$nap',localita='$localita',padre='$padre',$password madre='$madre',foto='$foto' WHERE id=$id";
 
         //echo($sql);
-
+        $timestamp = date("Y-m-d H:i:s");
+        $log="insert into log (id_patrizio,data_att) values ($id,'$timestamp')";
         if (!$connection->query($sql)) {
             //printf("Errormessage: %s\n", $connection->error);
-            echo "Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com";
+            echo("<div class='alert alert-danger' id='alert_danger'>Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com.</div>");
         }
         //$sql2 = trim(str_replace("'","\'", $sql));
-        $log="insert into log (id_patrizio,data_att) values ($id,now())";
-        if (!$connection->query($log)) {
 
-            printf("Errormessage: %s\n", $connection->error);
-            //echo "Problema di connessione log. PF inviare una mail a patriziato.bosco@gmail.com";
+        else if (!$connection->query($log)) {
+            //printf("Errormessage: %s\n", $connection->error);
+            echo("<div class='alert alert-danger' id='alert_danger'>Problema di connessione. PF inviare una mail a patriziato.bosco@gmail.com.</div>");
         }
-
-        echo('<div class="alert alert-success">Modifiche effettuate con successo.</div>');
+        else {
+            echo('<div class="alert alert-success">Modifiche effettuate con successo.</div>');
+        }
     }
 
 
@@ -370,7 +436,7 @@ include '../database.php';
                                  FROM patrizio WHERE id=$id and confermato=1")
     ) {
         //form
-        echo('<form method="POST" enctype="multipart/form-data" action="update.php" class="form-vertical">');
+        echo('<form method="POST" enctype="multipart/form-data" action="update.php" class="form-vertical" id="form_patrizi">');
         while ($row = mysqli_fetch_array($result)) {
 
             //id nascosto
@@ -427,42 +493,46 @@ include '../database.php';
             echo('<label >*via:</label>');
 
             $via=$row['via'];
-            echo("<input type='text' class='form-control' name='via'  value='$via'>");
+            echo("<input type='text' class='form-control' name='via' id='via'  value='$via'>");
             echo("<p></p>");
 
             echo('<label >*NAP:</label>');
 
             $nap=$row['nap'];
-            echo("<input type='text' class='form-control' name='nap'  value='$nap' required>");
+            echo("<input type='text' class='form-control' name='nap'  id='nap' value='$nap' onblur='cancErr(this)'>");
+            echo('<div id="errore_nap"></div>');
             echo("<p></p>");
 
             echo('<label >*Localit&agrave;:</label>');
 
             $localita=$row['localita'];
-            echo("<input type='text' class='form-control' name='localita'  value='$localita' required>");
+            echo("<input type='text' class='form-control' name='localita' id='localita' value='$localita' onblur='cancErr(this)'>");
+            echo('<div id="errore_localita"></div>');
             echo("<p></p>");
 
 
             echo('<label >*Cognome e nome del padre:</label>');
 
             $padre=$row['padre'];
-            echo("<input type='text' class='form-control' name='padre'  value='$padre' required>");
+            echo("<input type='text' class='form-control' name='padre' id='padre'  value='$padre' onblur='cancErr(this)'>");
+            echo('<div id="errore_padre"></div>');
             echo("<p></p>");
 
 
             echo('<label >*Cognome e nome della madre:</label>');
 
             $madre=$row['madre'];
-            echo("<input type='text' class='form-control' name='madre'  value='$madre' required>");
-
+            echo("<input type='text' class='form-control' name='madre' id='madre'  value='$madre' onblur='cancErr(this)'>");
+            echo('<div id="errore_madre"></div>');
             echo("<p></p>");
 
             echo('<label >*Password per futuri accessi:</label>');
+            $pass=$row['password'];
+            echo("<input type='hidden' class='form-control' name='pass' id='pass' value='$pass' >");
 
+            echo("<input type='password' class='form-control' name='password' id='password' onblur='cancErr(this)'>");
 
-            echo("<input type='password' class='form-control' name='password' id='password'>");
-
-
+            echo('<div id="errore_password"></div>');
             echo("<p></p>");
             echo('<label >*Ripeti password:</label>');
 
@@ -488,14 +558,15 @@ include '../database.php';
             echo("<img id='blah' name='blah' src='$foto' height='52' width='42'>");
 
 
-            //bottone modifica
-
-            echo("<p></p>");
-            echo('<input class="btn btn-primary" type="submit" value="Modifica" name="butt"></input>');
 
 
         }
+
+        //bottone modifica
+        echo("<p></p>");
+        echo("<input class='btn btn-primary' type='button' value='Modifica' name='butt' onclick='beforeSubmit();'></input>");
         echo('</form>');
+
     }
 
 
