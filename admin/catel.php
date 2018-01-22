@@ -9,8 +9,7 @@ include '../database.php';
 <!DOCTYPE html>
 <html lang="en">
   <head>
-
-    <meta charset="utf-8">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
@@ -185,6 +184,13 @@ include '../database.php';
             $nap=$row['nap'];
             $localita=$row['localita'];
             $foto=$row['foto'];
+
+            //a partire dal percorso e nome della foto originale estrapolo il nome e percorso del tmb
+            $nom_foto= substr($foto, strrpos($foto, '/')+1);
+            $percors_foto= substr($foto, 0,strrpos($foto, '/')+1);
+            $nome_tmb="tmb_".$nom_foto;
+            $tmb_foto=$percors_foto.$nome_tmb;
+
             //$data_inserimento=date_create($row['data_inserimento']);
             //$data_morte=date_create($row['data_morte']);
             //$data_perdita_patrizio=date_create($row['data_perdita_patrizio']);
@@ -213,7 +219,7 @@ include '../database.php';
             echo("<td>".$via."</td>");
             echo("<td>".$nap."</td>");
             echo("<td>".$localita."</td>");
-            echo("<td>".$foto."</td>");
+            echo("<td><img src='$tmb_foto' alt='$nom_foto'></td>");
             //echo("<td>".date_format($data_inserimento, 'd.m.Y')."</td>");
             //echo("<td>".date_format($data_morte, 'd.m.Y')."</td>");
             //echo("<td>".date_format($data_perdita_patrizio, 'd.m.Y')."</td>");

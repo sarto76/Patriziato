@@ -59,7 +59,7 @@ include '../database.php';
             $("#errore_data").html( "" );
         }
     }
-
+//funzione per controllare se le password corrispondono. Se ok vado a settare anche la variabile pass, così non dà l'errore Jquery
     function passMatch() {
         var p1=$("#password").val();
         var p2=$("#password2").val();
@@ -74,6 +74,8 @@ include '../database.php';
         }
         else{
             $("#errore_pass").html( "" );
+            //se corrispondono setto la variabile pass a pass
+            $("#pass").val("pass");
         }
     }
 
@@ -110,7 +112,7 @@ include '../database.php';
                 $("#errore_password").css('color', 'red');
                 $("#errore_password").html("Errore: non è stata immessa nessuna password. Inserirla per poter procedere alla registrazione");
 
-                $("#pass").val("pass");
+
                 //alert ($("#pass").val());
             }
             if (!$("#nap").val()) {
