@@ -77,7 +77,7 @@ session_start();
             <div class="panel-body">
 				<h4>Patriziato di Bosco Gurin</h4>
 				<p>6685 Bosco Gurin</p><br />
-				<p>Tel. <a href="tel://41-91-754-22-36">+41 (0)91 754 22 36</a></p><br />
+
 				<a href="mailto:patriziato.bosco@gmail.com ">patriziato.bosco@gmail.com</a>
             </div>
           </div>
