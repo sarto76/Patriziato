@@ -381,7 +381,14 @@ include '../database.php';
         }
 
         $id = $_SESSION['id'];
-        $result = $connection->query("SELECT nome,cognome,via,nap,localita FROM patrizio WHERE id=$id and confermato=1");
+
+        $stmt = $connection->prepare("SELECT * FROM patrizio WHERE confermato = 1 AND id= ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+
+
         $dati = $result->fetch_array(MYSQLI_ASSOC);
         $nome = $dati['nome'];
         $cognome = $dati['cognome'];

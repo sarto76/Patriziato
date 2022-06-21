@@ -62,7 +62,7 @@ include '../database.php';
     //se è settato il tipo di modifica lo registro in un cookie
 	if(isset($_GET['mod'])){
 		$mod=$_GET['mod'];
-		$mod=$_COOKIE['mod'];
+
 	}
     //se sto inserendo un dato (ho schiacciato il bottone inserisci )
 	if(isset($_POST['ins'])){
@@ -86,7 +86,7 @@ include '../database.php';
 		//$nome=$_POST['nome'];
 		$nome = mysqli_real_escape_string($connection,$_POST['nome']);
 		$url=$_POST['url'];
-		$mod=$_COOKIE['mod'];
+		$mod=$_GET['mod'];
 		
 		//se è un'eliminazione
 		if($mod=='del'){
@@ -147,8 +147,13 @@ include '../database.php';
 
 		//titolo
     echo('<h2>Modifica link</h2><br>');
+
+        $stmt = $connection->prepare("SELECT * FROM Link WHERE id= ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 		
-		if($result=$connection->query("SELECT * FROM Link WHERE id=$id")){
+		if($result){
 			//form
 		echo('<form method="POST" action="updateLink.php" class="form-horizontal">');
 			while($row=mysqli_fetch_array($result)){
@@ -190,7 +195,12 @@ include '../database.php';
 		//titolo
     echo('<h2>Elimina link</h2><br>');
 
-		if($result=$connection->query("SELECT * FROM Link WHERE id=$id")){
+        $stmt = $connection->prepare("SELECT * FROM Link WHERE id= ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+		if($result){
 
 		//form
 		echo('<form method="POST" action="updateLink.php" class="form-horizontal">');

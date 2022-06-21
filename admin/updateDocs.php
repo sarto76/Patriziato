@@ -57,7 +57,7 @@ include '../database.php';
     //se è settato il tipo di modifica lo registro in un cookie
 	if(isset($_GET['mod'])){
 		$mod=$_GET['mod'];
-		$mod=$_COOKIE['mod'];
+
 	}
 	//se sto inserendo un dato (ho schiacciato il bottone inserisci )
 	if(isset($_POST['ins']) && $_FILES['userfile']['size'] > 0){
@@ -93,7 +93,7 @@ include '../database.php';
 	 	$id=$_COOKIE['id'];
 		//$nome=$_POST['nome'];
 		$name = mysqli_real_escape_string($connection,$_POST['name']);
-		$mod=$_COOKIE['mod'];
+		$mod=$_GET['mod'];
 		
 		//se è un'eliminazione
 		if($mod=='del'){
@@ -146,8 +146,13 @@ include '../database.php';
 		//setto i cookie per la query finale
 		setcookie("mod", $mod, time() + (86400 * 30), "/");
 		setcookie("id", $id, time() + (86400 * 30), "/");
+
+        $stmt = $connection->prepare("SELECT * FROM docs WHERE id= ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 		
-		if($result=$connection->query("SELECT * FROM docs WHERE id=$id")){
+		if($result){
 			echo("<form method=\"POST\" action=\"updateDocs.php\"> ");
 			echo("<h1>Record scelto</h1>"); 
 			echo("<table class=\"table table-striped\">");
