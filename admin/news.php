@@ -121,7 +121,7 @@ include '../database.php';
             echo("<th>titolo</th>");
             echo("<th>contenuto</th>");
             echo("<th></th>");
-            echo("<th></th>");
+        echo("<th></th>");
           echo("</tr>");
         echo("</thead>");
         echo("<tbody>");
@@ -132,14 +132,20 @@ include '../database.php';
         $data=date_create($row['data_caricamento']);
         $categoria=$row['categoria'];
         $titolo=$row['titolo'];
-        $contenuto=$row['contenuto'];				
+        $contenuto=$row['contenuto'];
+        $attiva=$row['attiva'];
         echo("<td>".date_format($data, 'd.m.Y')."</td>");
         echo("<td>".$categoria."</td>");
-        echo("<td>".$titolo."</td>"); 
-        echo("<td>".$contenuto."</td>"); 
+        echo("<td>".$titolo."</td>");
+        if($attiva==1) {
+            echo("<td>" . $contenuto . "</td>");
+        }
+        else{
+            echo("<td><del>" . $contenuto . "</del></td>");
+        }
 				//2 link che mi inviano alla pagina di modifica/cancellazione/inserimento, passando id e modalità
 				echo('<td><a href="updateNews.php?mod=update&id=' . $row['id'] . '"><button class="btn btn-warning" type="button">Modifica</button></a></td>');  
-				echo('<td><a href="updateNews.php?mod=del&id=' . $row['id'] . '"><button class="btn btn-danger" type="button">Elimina</button></a></td>');   
+				echo('<td><a href="updateNews.php?mod=del&id=' . $row['id'] . '"><button class="btn btn-danger" type="button">Elimina</button></a></td>');
 				echo('</tr>');
         //campo nascosto dove tengo in memoria l'id
 				echo("<input type=\"hidden\" name=\"id\" value=$id>"); 

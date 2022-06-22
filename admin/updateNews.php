@@ -63,7 +63,11 @@ include '../database.php';
   //se è settato il tipo di modifica lo registro in un cookie
 	if(isset($_GET['mod'])){
 		$mod=$_GET['mod'];
-		$mod=$_COOKIE['mod'];
+        unset($_COOKIE['mod']);
+
+        $time=time();
+        setcookie("mod", $mod, time()+86400);
+        //print_r ($mod);
 	}
     //se sto inserendo un dato (ho schiacciato il bottone inserisci )
 	if(isset($_POST['ins'])){
@@ -78,16 +82,26 @@ include '../database.php';
 			echo "Errore: " . $sql . "<br>" . mysqli_error($_connection);
 		}
 	}
-    //se ho cliccato  il tasto esegui (update o delete)
+    //se ho cliccato  il tasto esegui (update o delete o hide)
     if(isset($_POST['butt'])){
+
 		$connection=Database::getConnection();
 		//riprendo i valori necessari
 	 	$id=$_COOKIE['id'];
 		$categoria = mysqli_real_escape_string($connection,$_POST['categoria']);
 		$titolo = mysqli_real_escape_string($connection,$_POST['titolo']);
 		$contenuto = mysqli_real_escape_string($connection,$_POST['contenuto']);
+        $attiva = mysqli_real_escape_string($connection,$_POST['attiva']);
+        if($attiva=='on'){
+            $attiva=1;
+        }
+        else{
+            $attiva=0;
+        }
+
+
 		$mod=$_COOKIE['mod'];
-		
+
 		//se è un'eliminazione
 		if($mod=='del'){
 			$sql="DELETE FROM news 
@@ -98,12 +112,15 @@ include '../database.php';
 		
 		//se è una modifica
 		if($mod=='update'){
+
 			$sql="UPDATE news 
-						SET data_caricamento=now(), categoria='$categoria', titolo='$titolo', contenuto='$contenuto' 
+						SET data_caricamento=now(), categoria='$categoria', titolo='$titolo', contenuto='$contenuto' , attiva='$attiva' 
 						WHERE id=$id";
+			//echo ($sql);
 			$result = $connection->query($sql);
 			header('Location: news.php');
 		}
+
 	}
 	
 	
@@ -138,6 +155,12 @@ include '../database.php';
 				echo('<textarea class="form-control" name="contenuto" placeholder="Inserisci contenuto"></textarea>');
 				echo('</div>');
 		echo('</div>');
+
+        echo('<label class="control-label col-sm-2">Contenuto:</label>');
+        echo('<div class="col-sm-10">');
+        echo('<textarea class="form-control" name="contenuto" placeholder="Inserisci contenuto"></textarea>');
+        echo('</div>');
+        echo('</div>');
 		//bottone inserisci
 		echo('<div class="form-group">');
 				echo('<div class="col-sm-offset-2 col-sm-10">');
@@ -163,6 +186,8 @@ include '../database.php';
 		//form
 		echo('<form method="POST" action="updateNews.php" class="form-horizontal">');
 			while($row=mysqli_fetch_array($result)){
+
+
 				//id nascosto
 				echo('<input type="hidden" name="id"  value='.$row['id'].'>'); 
 				//categoria
@@ -186,6 +211,22 @@ include '../database.php';
 						echo('<textarea class="form-control" name="contenuto">'.$row['contenuto'].'</textarea>');
 						echo('</div>');
 				echo('</div>');
+
+                //attiva
+                $attiva=$row['attiva'];
+                $checcato='';
+                if($attiva==1){
+                    $checcato='checked="checked"';
+                }
+                echo('<div class="form-group">');
+                echo('<div class="col-sm-offset-2 col-sm-10">');
+                echo('<input class="form-check-input" type="checkbox" name="attiva" id="attiva" '.$checcato.'>
+                        <label class="form-check-label" for="attiva">
+                        Attiva
+                        </label>');
+                echo('</div>');
+                echo('</div>');
+
 				//bottone modifica
 				echo('<div class="form-group">');
 						echo('<div class="col-sm-offset-2 col-sm-10">');

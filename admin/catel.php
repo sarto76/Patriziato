@@ -9,13 +9,14 @@ include '../database.php';
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="favicon.ico">
 
     <title>Gestione Catalogo Elettorale</title>
 
@@ -73,7 +74,7 @@ include '../database.php';
     <script type="text/javascript">
     $(document).ready(function() {
       $('#catel').DataTable( {
-      "order": [[ 1, "asc" ]],
+      "order": [[ 0, "asc" ]],
         "deferRender": true,
         "language": {
             "sEmptyTable":     "Nessun dato presente nella tabella",
@@ -112,6 +113,14 @@ include '../database.php';
     echo('<h2>Elenco patrizi</h2><br>');
     $connection=Database::getConnection();
 //print_r($connection);
+
+$res2=$connection->query("SELECT COUNT(DISTINCT no_registro)as num FROM patrizio WHERE vivente=1 and confermato=1 AND data_perdita_patrizio IS NULL")->fetch_assoc();
+$fuochi = $res2['num'];
+echo('<h5>Numero fuochi: '.$fuochi.'</h5>'); 
+$res3 = $connection->query("SELECT COUNT(id) as num FROM patrizio where vivente=1 AND confermato=1 AND data_perdita_patrizio IS NULL and diritto_di_voto=1")->fetch_assoc();
+$diritto=$res3['num'];
+echo('<h5>Patrizi con diritto di voto: '.$diritto.'</h5>');
+
      $result=$connection->query("SELECT `no_registro`,id, `cognome`, `nome`, `data_nascita`, padre,madre,
                                diritto_di_voto, `vivente`, data_inserimento,data_morte,diritto_di_voto,data_perdita_patrizio,telefono,email,
                                 via, nap,localita,foto
@@ -131,6 +140,7 @@ include '../database.php';
       echo('<table width="100%" class="table table-striped table-bordered dt-responsive nowrap" id="catel" cellspacing="0">');
         echo('<thead>');
           echo('<tr>');
+            echo("<th>no</th>");
             echo("<th>no registro</th>");
             echo("<th>cognome</th>");
             echo("<th>nome</th>");
@@ -158,8 +168,10 @@ include '../database.php';
         echo("</thead>");
         echo("<tbody>");
         }
+           $num=1;
 		while($row=mysqli_fetch_array($result)){
 			echo('<tr>');
+
             $no_registro=$row['no_registro'];
             $id=$row['id'];
             $cognome=$row['cognome'];
@@ -184,19 +196,12 @@ include '../database.php';
             $nap=$row['nap'];
             $localita=$row['localita'];
             $foto=$row['foto'];
-
-            //a partire dal percorso e nome della foto originale estrapolo il nome e percorso del tmb
-            $nom_foto= substr($foto, strrpos($foto, '/')+1);
-            $percors_foto= substr($foto, 0,strrpos($foto, '/')+1);
-            $nome_tmb="tmb_".$nom_foto;
-            $tmb_foto=$percors_foto.$nome_tmb;
-
             //$data_inserimento=date_create($row['data_inserimento']);
             //$data_morte=date_create($row['data_morte']);
             //$data_perdita_patrizio=date_create($row['data_perdita_patrizio']);
             //campi
 
-
+           echo ("<td>".$num."</td>");
             echo("<td>".$no_registro."</td>");
             echo("<td>".$cognome."</td>");
             echo("<td>".$nome."</td>");
@@ -219,7 +224,13 @@ include '../database.php';
             echo("<td>".$via."</td>");
             echo("<td>".$nap."</td>");
             echo("<td>".$localita."</td>");
-            echo("<td><img src='$tmb_foto' alt='$nom_foto'></td>");
+            echo("<td>");
+            $foto1="../update/$foto";
+            $posizione=strrpos($foto1, '/')+1;
+            $piccola= substr_replace($foto1, 'tmb_', $posizione, 0);
+            //print_r($piccola);
+            echo("<a href='$foto1' target='_blank'> <img id='blah' name='blah' src='$piccola' ></a>");
+            echo("</td>");
             //echo("<td>".date_format($data_inserimento, 'd.m.Y')."</td>");
             //echo("<td>".date_format($data_morte, 'd.m.Y')."</td>");
             //echo("<td>".date_format($data_perdita_patrizio, 'd.m.Y')."</td>");
@@ -228,7 +239,8 @@ include '../database.php';
             //echo('<td><a href="#"><button class="btn btn-danger" type="button">Elimina</button></a></td>');
             echo('</tr>');
             //campo nascosto dove tengo in memoria l'id
-            echo("<input type=\"hidden\" name=\"id\" value=$id>"); 
+            echo("<input type=\"hidden\" name=\"id\" value=$id>");
+             $num++; 
 	    } 
         echo('</tbody>');
         echo('</table>');

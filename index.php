@@ -1,12 +1,6 @@
 <?php
 session_start();
-include_once 'admin/Counter.php';
-$c=new Counter();
-$c->write("admin/public.txt");
-
-
-
-
+$_SESSION['countNews'] = $_SESSION ['countNews'] + 1;
 include 'database.php';
 ?>
 
@@ -89,7 +83,7 @@ include 'database.php';
                 <div class="panel-body">
                     <?php
                     $connection = Database::getConnection();
-                    if ($result = $connection->query("SELECT * FROM `news` ORDER BY `news`.`data_caricamento` DESC")) {
+                    if ($result = $connection->query("SELECT * FROM `news` where attiva=1 ORDER BY `news`.`data_caricamento` DESC")) {
                         if (mysqli_num_rows($result) == 0) {
                             ?>
                             <div class="alert alert-warning" role="alert">
