@@ -58,7 +58,7 @@ include '../database.php';
     //se è settato il tipo di modifica lo registro in un cookie
 	if(isset($_GET['mod'])){
 		$mod=$_GET['mod'];
-		$mod=$_COOKIE['mod'];
+
 	}
 	//se sto inserendo un dato (ho schiacciato il bottone inserisci )
 	if((isset($_POST['ins']) || isset($_POST['update'])) && isset($_FILES['files'])){
@@ -149,7 +149,7 @@ include '../database.php';
 		//$fn=$_POST['fn'];
 		$title = mysqli_real_escape_string($connection,$_POST['title']);
 		$description = mysqli_real_escape_string($connection,$_POST['description']);
-		$mod=$_COOKIE['mod'];
+		$mod=$_GET['mod'];
 		
 		//eliminazione singole immagini
 		if($mod=='show' && isset($fn)){
@@ -243,8 +243,13 @@ include '../database.php';
 		//setto i cookie per la query finale
 		setcookie("mod", $mod, time() + (86400 * 30), "/");
 		setcookie("id", $id, time() + (86400 * 30), "/");
+
+        $stmt = $connection->prepare("SELECT * FROM prop WHERE id= ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 		
-		if($result=$connection->query("SELECT * FROM prop WHERE id=$id")){
+		if($result){
 			echo("<form method=\"POST\" enctype=\"multipart/form-data\" action=\"updateProp.php\"> ");
 			echo("<div class=\"container theme-showcase\" role=\"main\">");
 	      	echo("<div class=\"row\">");

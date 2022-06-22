@@ -350,7 +350,16 @@ include '../database.php';
 
     //titolo
     echo('<h2>Modifica dati personali</h2><br>');
-    if ($result = $connection->query("SELECT *FROM patrizio WHERE id=$id and confermato=1"))
+
+    $stmt = $connection->prepare("SELECT * FROM patrizio WHERE confermato = 1 AND id= ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+
+
+
+    if ($result)
     {
         //form
         echo('<form method="POST" enctype="multipart/form-data" action="update.php" class="form-vertical">');

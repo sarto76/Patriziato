@@ -189,7 +189,15 @@ include '../database.php';
 
     //titolo
     echo('<h2>Modifica non confermati</h2><br>');
-    if ($result = $connection->query("SELECT *FROM patrizio WHERE id=$id"))
+
+    $stmt = $connection->prepare("SELECT * FROM patrizio WHERE id= ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+
+
+    if ($result)
     {
         //form
         echo('<form method="POST" enctype="multipart/form-data" action="mod_non_confermati.php" class="form-vertical">');
